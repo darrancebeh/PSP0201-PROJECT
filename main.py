@@ -1,5 +1,7 @@
 import os;
 import time;
+import string;
+import random;
 
 #Clear Screen Function
 def clear():
@@ -21,23 +23,18 @@ def login():
     file = open("registry.txt", 'r');
 
     for info in file:
-        a, b, status = info.split(" | ");
+        a, b, id, status = info.split(" | ");
         a = a.strip();
         b = b.strip();
+        id = id.strip();
         status = status.strip();
 
         if(username == a and password == b):
             print(f"\nCongratulations! Login is Successful, welcome back {username}.");
             time.sleep(2);
-            return username, password, status;
-
-    print("Username or Password is Incorrect. Please Try Again.");
-    print("Redirecting to Main Menu...");
-    time.sleep(2);
-    loginSys();
+            return(username, password, id, status);
 
     file.close();
-    
 
 def register():
     clear();
@@ -55,11 +52,26 @@ def register():
     print(f"Your Desired Username: {username}\n");
     password = input("Enter Your Desired Password: ");
 
-    file = open("registry.txt", "a");
-    file.write(f"{username} | {password} | COACHEE\n");
+    idGen = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5));
+
+    file = open("registry.txt", "r");
+
+    if(idGen in file):
+        while(idGen in file):
+            idGen = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5));
+
     file.close();
 
-    print(f"User Successfully Created. Welcome COACHEE {username}.")
+    file = open("registry.txt", "a");
+    file.write(f"{username} | {password} | {idGen} | COACHEE\n");
+    file.close();
+
+    clear();
+    print(f"User Successfully Created. Welcome COACHEE {username}.\n");
+    print(f"Your uniquely generated UserID is [ {idGen} ] ");
+    print(f"\n\nReturning to Login Screen...");
+
+    time.sleep(2);
     loginSys();
 
 def checkUsername(username):
@@ -85,28 +97,121 @@ def loginSys():
             print("Please Enter a Valid Input. [ 1 / 2 ]\n");
     
     if(opt == '1'):
-        a, b, c = login();
+        a, b, c, d = login();
 
-        if(c == "COACHEE"):
-            coachee(a,b,c);
-        elif(c == "COACH"):
-            coach(a,b,c);
+        if(d == "COACHEE"):
+            coachee(a,b,c,d);
+        elif(d == "COACH"):
+            coach(a,b,c,d);
 
     elif(opt == '2'):
         register();
 
-def coachee(username, password, status):
+def coachee(username, password, id, status):
     clear();
 
-    print(f"Welcome, COACHEE {username}!\n\n");
-    print("COACHEE INTERFACE");
+    print(f"Welcome, COACHEE {username}!");
+    print(f"Your UserID is: {id}\n");
+    print("COACHEE INTERFACE\n");
 
-def coach(username, password, status):
+    print("_________________________________________________________\n");
+    allMsg = getMsg(username, id);
+    if len(allMsg) == 0:
+        print(f"Dear {username}, you do not have any unread notifications.");
+    else:
+        print(f"Dear {username}, you have unread notifications.\n");
+        print(f"Unread Messages ({len(allMsg)})");
+        count = 1;
+        for msg in allMsg:
+            a, b, c = msg.split(" | ");
+            a = a.strip();
+            b = b.strip();
+            c = c.strip();
+
+            print(f"[{count}] | From: {b} | Message: {c}");
+            count += 1;
+    
+        opt = "";
+        while(opt != 'y' or opt != 'n'):
+            opt = input(("\n\nDo you want to clear your messages? [ Y \ N ]\n")).lower();
+            if(opt == 'y' or opt == 'n'):
+                break;
+            else:
+                print("Please Enter a Valid Input. [ Y / N ]\n");
+
+        if(opt == 'y'):
+            file = open("messageLog.txt", "r");
+            lines = file.readlines();
+            file.close();
+
+            file = open("messageLog.txt", "w");
+            for line in lines:
+                info = line.split(" | ");
+                if(info[0] != username):
+                    file.write(line);
+            file.close();
+
+        print("Your Messages have Been Successfully Cleared!\n");
+
+    print(f"Dear Coachee, What Would you Like to Do?\n");
+
+def coach(username, password, id, status):
     clear();
 
     print(f"Welcome, COACH {username}!\n");
     print("COACH INTERFACE");
 
+    print("testing messaging system");
+    message(username);
+
+def getMsg(username, id):
+    file = open("messageLog.txt", 'r');
+
+    allMsg = [];
+
+    for info in file:
+        recipient, sender, content = info.split(" | ");
+        recipient = recipient.strip();
+        sender = sender.strip();
+        content = content.strip();
+
+        if(recipient == username):
+            allMsg.append(info);
+
+    file.close();
+    return allMsg;
+
+def message(username):
+
+    receive = input("To who do you want to send a message to?\n( !Enter their UserID! )");
+
+    file = open("registry.txt", 'r');
+
+    for info in file:
+        a, b, id, status = info.split(" | ");
+        a = a.strip();
+        b = b.strip();
+        id = id.strip();
+        status = status.strip();
+
+        name = "";
+
+        if(receive == id):
+            name = a;
+            break;
+
+    file.close();
+    print(f"You are sending a message to: {name}");
+    content = input("Please Enter Your Message Below:\n");
+    
+    file = open("messageLog.txt", 'a');
+    
+    file.write(f"{name} | {username} | {content}\n");
+
+    file.close();
+
+def clearMsg(username):
+    pass;    
 
 #Function that runs first
 # MAIN FUNCTION START
