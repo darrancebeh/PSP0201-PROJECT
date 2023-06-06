@@ -34,7 +34,11 @@ def login():
             time.sleep(2);
             return(username, password, id, status);
 
+    print("\n\nIncorrect Username or Password.");
+    print("Redirecting to Login Page...");
     file.close();
+    time.sleep(2);
+    loginSys();
 
 def register():
     clear();
@@ -140,29 +144,80 @@ def coachee(username, password, id, status):
                 print("Please Enter a Valid Input. [ Y / N ]\n");
 
         if(opt == 'y'):
-            file = open("messageLog.txt", "r");
-            lines = file.readlines();
-            file.close();
+            clearMsg(username);
+            print("Your Messages have Been Successfully Cleared!\n\n");
+        else:
+            print("Messages Not Cleared.\n\n")
 
-            file = open("messageLog.txt", "w");
-            for line in lines:
-                info = line.split(" | ");
-                if(info[0] != username):
-                    file.write(line);
-            file.close();
-
-        print("Your Messages have Been Successfully Cleared!\n");
+        time.sleep(2);
 
     print(f"Dear Coachee, What Would you Like to Do?\n");
+    option = input("Function Options\n[ 1 ] - Send a Message.\nPlease Enter the Respective Function Number ONLY.\n\n");
+
+    while not(option.isdigit() and int(option) < 2 and int(option) > 0):
+        print("\nInvalid Input Detected.\n");
+        print("Please Enter a Valid Prompt.\n\n");
+        option = input("Function Options\n[ 1 ] - Send a Message.\nPlease Enter the Respective Function Number ONLY.\n\n");
+
+    funcDict = {
+        '1' : message,
+    };
+
+    funcDict[option](username, id);
 
 def coach(username, password, id, status):
     clear();
 
-    print(f"Welcome, COACH {username}!\n");
+    print(f"Welcome, COACH {username}!");
+    print(f"Your UserID is: {id}\n");
     print("COACH INTERFACE");
 
-    print("testing messaging system");
-    message(username);
+    print("_________________________________________________________\n");
+    allMsg = getMsg(username, id);
+    if len(allMsg) == 0:
+        print(f"Dear {username}, you do not have any unread notifications.");
+    else:
+        print(f"Dear {username}, you have unread notifications.\n");
+        print(f"Unread Messages ({len(allMsg)})");
+        count = 1;
+        for msg in allMsg:
+            a, b, c = msg.split(" | ");
+            a = a.strip();
+            b = b.strip();
+            c = c.strip();
+
+            print(f"[{count}] | From: {b} | Message: {c}");
+            count += 1;
+    
+        opt = "";
+        while(opt != 'y' or opt != 'n'):
+            opt = input(("\n\nDo you want to clear your messages? [ Y \ N ]\n")).lower();
+            if(opt == 'y' or opt == 'n'):
+                break;
+            else:
+                print("Please Enter a Valid Input. [ Y / N ]\n");
+
+        if(opt == 'y'):
+            clearMsg(username);
+            print("Your Messages have Been Successfully Cleared!\n\n");
+        else:
+            print("Messages Not Cleared.\n\n")
+
+        time.sleep(2);
+
+    print(f"Dear Coachee, What Would you Like to Do?\n");
+    option = input("Function Options\n[ 1 ] - Send a Message.\nPlease Enter the Respective Function Number ONLY.\n\n");
+
+    while not(option.isdigit() and int(option) < 2 and int(option) > 0):
+        print("\nInvalid Input Detected.\n");
+        print("Please Enter a Valid Prompt.\n\n");
+        option = input("Function Options\n[ 1 ] - Send a Message.\nPlease Enter the Respective Function Number ONLY.\n\n");
+
+    funcDict = {
+        '1' : message,
+    };
+
+    funcDict[option](username, id);
 
 def getMsg(username, id):
     file = open("messageLog.txt", 'r');
@@ -181,7 +236,7 @@ def getMsg(username, id):
     file.close();
     return allMsg;
 
-def message(username):
+def message(username, Uid):
 
     receive = input("To who do you want to send a message to?\n( !Enter their UserID! )");
 
@@ -211,7 +266,16 @@ def message(username):
     file.close();
 
 def clearMsg(username):
-    pass;    
+    file = open("messageLog.txt", "r");
+    lines = file.readlines();
+    file.close();
+
+    file = open("messageLog.txt", "w");
+    for line in lines:
+        info = line.split(" | ");
+        if(info[0] != username):
+            file.write(line);
+    file.close(); 
 
 #Function that runs first
 # MAIN FUNCTION START
