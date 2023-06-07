@@ -2,6 +2,7 @@ import os;
 import time;
 import string;
 import random;
+import re;
 
 #Clear Screen Function
 def clear():
@@ -174,51 +175,6 @@ def bmiCalc():
         print(f"Your BMI is {bmi}");
         print ("You are obese, Get Workout Now! \n\n")
 
-def coacheeProfile(username, password, id, status):
-    clear();
-    print("Coachee Profile Interface");
-
-    print("\n\n__________Profile__________")
-    opt = "";
-    while(opt != 'y' or opt != 'n'):
-        opt = input("Would you like to update your profile?\n[ (Y)es / (N)o ]\n").lower();
-        if(opt == 'y' or opt == 'n'):
-            break;
-        else:
-            print("Please Enter a Valid Input. [ Y / N ]\n");
-    
-    if(opt == 'y'):
-        time.sleep(1)
-        print("\nTell us about yourself. \n\n")
-        name = input("Name: ")
-        age = input("Age: ")
-        contact_no = input("Contact.no: ")
-        weight = float(input("Weight, in meters: "))
-        while not(weight.isdigit()):
-            print("Please enter a valid NUMBER.");
-            weight = float(input("Weight, in meters: "));
-        height = input("Height, in kilograms: ")
-        while not(height.isdigit()):
-            print("Please enter a valid NUMBER.");
-            weight = float(input("Height, in meters: "));
-        
-
-        f = open('coachee_profile.txt','a')     
-        f.write(f'{username} || {name} | {age} | {contact_no} | {weight} | {height}')
-        f.close()
-        print("\n\nProcessing...")
-        time.sleep(2)
-
-        print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
-        
-        print("Redirecting back to Coachee Page...\n");
-        time.sleep(2);
-        coachee(username, password, id, status);
-
-    elif(opt == 'n'):
-        print("Okay. Redirecting to Coachee Page...");
-        time.sleep(2);
-        coachee(username, password, id, status);
 
 def coacheeProfile(username, password, id, status):
     print("Coachee Profile Interface");
@@ -267,10 +223,9 @@ def coacheeProfile(username, password, id, status):
             except:
                 print("Please enter a valid NUMBER.");
             weight = float(input("Weight, in kilograms: "));
-        
 
         f = open('coachee_profile.txt','a')     
-        f.write(f'lol || {name} | {age} | {contact_no} | {weight} | {height}')
+        f.write(f'{username} ; {id} || {name} | {age} | {contact_no} | {weight} | {height}')
         f.close()
         print("\n\nProcessing...")
         time.sleep(2)
@@ -292,6 +247,85 @@ def coacheeProfile(username, password, id, status):
 
 # COACH FUNCTIONS start
 
+def removeUser(username, password, id, status):
+    print("\nInput '!' to return to previous interface.");
+    user = input("Input the Username/UserID of the user you want to ban: ");
+
+    file = open("registry.txt", 'r');
+
+    flag = False;
+
+    for info in file:
+        info.rstrip();
+
+        if re.search(r"\b{}\b".format(user), info):
+            flag = 'y';
+            break;
+    
+    file.close();
+
+    if(user == '!'):
+        print("Okay. Redirecting to Coach Interface...");
+        time.sleep(2);
+        coachee(username, password, id, status);
+
+    if(flag):
+        file = open("registry.txt", 'r');
+    
+        for info in file:
+            name, b, uid, d = info.split(" | ");
+            name = name.strip();
+            b = b.strip();
+            uid = uid.strip();
+            d = d.strip();
+        
+        if(user == name or user == uid):
+            print(f"\n\nThe Details of the User:- \nUsername: {name} | UserID: {uid} | STATUS: {d}");
+
+        file.close();
+    
+        opt = "";
+        while(opt != 'y' or opt != 'n'):
+            opt = input(("\n\nAre You Sure That You Want to Ban The User? [ Y \ N ]\n")).lower();
+            if(opt == 'y' or opt == 'n'):
+                break;
+            else:
+                print("Please Enter a Valid Input. [ Y / N ]\n");
+    
+        if(opt == 'y'):
+            reason = input("\nPlease Provide a Reason to The Ban: ");
+        
+            file = open("registry.txt", "r");
+            lines = file.readlines();
+            file.close();
+
+            file = open("registry.txt", "w");
+            for line in lines:
+                info = line.split(" | ");
+
+                if info[0] == name:
+                    info[3] = "BANNED";
+                    info[2] = reason;
+                    file.write(" | ".join(info));
+                else:
+                    file.write(line);
+
+            file.close();
+            print("User Successfully Banned.");
+
+            print("Redirecting to Coach Interface...");
+            time.sleep(2);
+            coachee(username, password, id, status);
+        
+        else:
+            print("Okay. Returning to Coach Interface...");
+            time.sleep(2);
+            coachee(username, password, id, status);
+            
+    else:
+        print("Invalid Input Detected. Redirecting to Coach Interface...");
+        time.sleep(2);
+        coachee(username, password, id, status);
 
 
 # COACH FUNCTIONS end

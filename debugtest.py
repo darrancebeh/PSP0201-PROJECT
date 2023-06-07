@@ -1,66 +1,79 @@
-import time;
+def removeUser():
+    print("\nInput '!' to return to previous interface.");
+    user = input("Input the Username/UserID of the user you want to ban: ");
 
+    file = open("registry.txt", 'r');
 
-def coacheeProfile():
-    print("Coachee Profile Interface");
+    flag = False;
 
-    print("\n\n__________Profile__________")
-    opt = "";
-    while(opt != 'y' or opt != 'n'):
-        opt = input("Would you like to update your profile?\n[ (Y)es / (N)o ]\n").lower();
-        if(opt == 'y' or opt == 'n'):
+    for info in file:
+        info.rstrip();
+
+        if re.search(r"\b{}\b".format(user), info):
+            flag = 'y';
             break;
-        else:
-            print("Please Enter a Valid Input. [ Y / N ]\n");
     
-    if(opt == 'y'):
-        print("\nTell us about yourself. \n\n")
-        name = input("Name: ")
+    file.close();
 
-        age = "";
-        while not(isinstance(age, int)):
-            try:
-                age = int(input("Age, in years: "));
-            except:
-                print("Please enter a valid NUMBER.");
-                age = int(input("Age, in years: "));
+    if(user == '!'):
+        print("Okay. Redirecting to Coach Interface...");
+        # time.sleep(2);
+        # coachee(username, password, id, status);
+
+    if(flag):
+        file = open("registry.txt", 'r');
+    
+        for info in file:
+            name, b, uid, d = info.split(" | ");
+            name = name.strip();
+            b = b.strip();
+            uid = uid.strip();
+            d = d.strip();
         
-        contact_no = "";
-        while not(isinstance(contact_no, int)):
-            try:
-                contact_no = int(input("Contact.no: "))
-            except:
-                print("Please enter a valid NUMBER.");
-                contact_no = int(input("Contact.no: "))
+        if(user == name or user == uid):
+            print(f"\n\nThe Details of the User:- \nUsername: {name} | UserID: {uid} | STATUS: {d}");
 
-        height = "";
-        while not(isinstance(height, float)):
-            try:
-                weight = float(input("Height, in meters: "));
-            except:
-                print("Please enter a valid NUMBER.");
-            height = float(input("Height, in meters: "));
+        file.close();
+    
+        opt = "";
+        while(opt != 'y' or opt != 'n'):
+            opt = input(("\n\nAre You Sure That You Want to Ban The User? [ Y \ N ]\n")).lower();
+            if(opt == 'y' or opt == 'n'):
+                break;
+            else:
+                print("Please Enter a Valid Input. [ Y / N ]\n");
+    
+        if(opt == 'y'):
+            reason = input("\nPlease Provide a Reason to The Ban: ");
         
-        weight = "";
-        while not(isinstance(weight, float)):
-            try:
-                weight = float(input("Weight, in kilograms: "));
-            except:
-                print("Please enter a valid NUMBER.");
-            weight = float(input("Weight, in kilograms: "));
+            file = open("registry.txt", "r");
+            lines = file.readlines();
+            file.close();
+
+            file = open("registry.txt", "w");
+            for line in lines:
+                info = line.split(" | ");
+
+                if info[0] == name:
+                    info[3] = "BANNED";
+                    info[2] = reason;
+                    file.write(" | ".join(info));
+                else:
+                    file.write(line);
+
+            file.close();
+            print("User Successfully Banned.");
+
+            print("Redirecting to Coach Interface...");
+            # time.sleep(2);
+            # coachee(username, password, id, status);
         
-
-        f = open('coachee_profile.txt','a')     
-        f.write(f'lol || {name} | {age} | {contact_no} | {weight} | {height}')
-        f.close()
-        print("\n\nProcessing...")
-        time.sleep(2)
-
-        print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
-        
-        print("Redirecting back to Coachee Page...\n");
-
-    elif(opt == 'n'):
-        print("Okay. Redirecting to Coachee Page...");
-
-coacheeProfile()
+        else:
+            print("Okay. Returning to Coach Interface...");
+            # time.sleep(2);
+            # coachee(username, password, id, status);
+            
+    else:
+        print("Invalid Input Detected. Redirecting to Coach Interface...");
+        # time.sleep(2);
+        # coachee(username, password, id, status);
