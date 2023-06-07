@@ -89,27 +89,217 @@ def checkUsername(username):
     file.close();
     return False;
 
-def loginSys():
+def getMsg(username, id):
+    file = open("messageLog.txt", 'r');
+
+    allMsg = [];
+
+    for info in file:
+        recipient, sender, content = info.split(" | ");
+        recipient = recipient.strip();
+        sender = sender.strip();
+        content = content.strip();
+
+        if(recipient == username):
+            allMsg.append(info);
+
+    file.close();
+    return allMsg;
+
+def message(username, uid):
+
+    receive = input("To who do you want to send a message to?\n( !Enter their UserID! )");
+
+    file = open("registry.txt", 'r');
+
+    for info in file:
+        a, b, id, status = info.split(" | ");
+        a = a.strip();
+        b = b.strip();
+        id = id.strip();
+        status = status.strip();
+
+        name = "";
+
+        if(receive == id):
+            name = a;
+            break;
+
+    file.close();
+    print(f"You are sending a message to: {name}");
+    content = input("Please Enter Your Message Below:\n");
+    
+    file = open("messageLog.txt", 'a');
+    
+    file.write(f"{name} | {username} | {content}\n");
+
+    file.close();
+
+def clearMsg(username):
+    file = open("messageLog.txt", "r");
+    lines = file.readlines();
+    file.close();
+
+    file = open("messageLog.txt", "w");
+    for line in lines:
+        info = line.split(" | ");
+        if(info[0] != username):
+            file.write(line);
+    file.close();
+
+
+# COACHEE FUNCTIONS start
+
+def bmiCalc():
+    print("\n\nBody Mass Index Calculator Interface\n\n")
+    print("Calculate your BMI!\n")
+    weight = float(input("Enter your weight, in kg: "))
+    height = float(input("Enter your height, in m: "))
+
+    bmi = round((weight / height**2),2)
+    
+    if(bmi <= 18.5):
+        print(f"Your BMI is {bmi}");
+        print("You are Underweight, You Should Gain More Weight!\n\n")
+
+    elif(18.5 < bmi < 25):
+        print(f"Your BMI is {bmi}");
+        print ("Your BMI is Normal, Good Job! \n\n")
+    
+    elif(25 <= bmi < 30):
+        print(f"Your BMI is {bmi}");
+        print ("You are Overweight, You Should Start Working-out Now! \n\n")
+
+    else:
+        print(f"Your BMI is {bmi}");
+        print ("You are obese, Get Workout Now! \n\n")
+
+def coacheeProfile(username, password, id, status):
     clear();
-    print("_____________________________________________________________\n");
+    print("Coachee Profile Interface");
+
+    print("\n\n__________Profile__________")
     opt = "";
-    while(opt != '1' or opt != '2'):
-        opt = input("Would you like to login or register? \n\n[ 1 ] - Login.\n[ 2 ] - Register.\n\nEnter your Input: ");
-        if(opt == '1' or opt == '2'):
+    while(opt != 'y' or opt != 'n'):
+        opt = input("Would you like to update your profile?\n[ (Y)es / (N)o ]\n").lower();
+        if(opt == 'y' or opt == 'n'):
             break;
         else:
-            print("Please Enter a Valid Input. [ 1 / 2 ]\n");
+            print("Please Enter a Valid Input. [ Y / N ]\n");
     
-    if(opt == '1'):
-        a, b, c, d = login();
+    if(opt == 'y'):
+        time.sleep(1)
+        print("\nTell us about yourself. \n\n")
+        name = input("Name: ")
+        age = input("Age: ")
+        contact_no = input("Contact.no: ")
+        weight = float(input("Weight, in meters: "))
+        while not(weight.isdigit()):
+            print("Please enter a valid NUMBER.");
+            weight = float(input("Weight, in meters: "));
+        height = input("Height, in kilograms: ")
+        while not(height.isdigit()):
+            print("Please enter a valid NUMBER.");
+            weight = float(input("Height, in meters: "));
+        
 
-        if(d == "COACHEE"):
-            coachee(a,b,c,d);
-        elif(d == "COACH"):
-            coach(a,b,c,d);
+        f = open('coachee_profile.txt','a')     
+        f.write(f'{username} || {name} | {age} | {contact_no} | {weight} | {height}')
+        f.close()
+        print("\n\nProcessing...")
+        time.sleep(2)
 
-    elif(opt == '2'):
-        register();
+        print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
+        
+        print("Redirecting back to Coachee Page...\n");
+        time.sleep(2);
+        coachee(username, password, id, status);
+
+    elif(opt == 'n'):
+        print("Okay. Redirecting to Coachee Page...");
+        time.sleep(2);
+        coachee(username, password, id, status);
+
+def coacheeProfile(username, password, id, status):
+    print("Coachee Profile Interface");
+
+    print("\n\n__________Profile__________")
+    opt = "";
+    while(opt != 'y' or opt != 'n'):
+        opt = input("Would you like to update your profile?\n[ (Y)es / (N)o ]\n").lower();
+        if(opt == 'y' or opt == 'n'):
+            break;
+        else:
+            print("Please Enter a Valid Input. [ Y / N ]\n");
+    
+    if(opt == 'y'):
+        print("\nTell us about yourself. \n\n")
+        name = input("Name: ")
+
+        age = "";
+        while not(isinstance(age, int)):
+            try:
+                age = int(input("Age, in years: "));
+            except:
+                print("Please enter a valid NUMBER.");
+                age = int(input("Age, in years: "));
+        
+        contact_no = "";
+        while not(isinstance(contact_no, int)):
+            try:
+                contact_no = int(input("Contact.no: "))
+            except:
+                print("Please enter a valid NUMBER.");
+                contact_no = int(input("Contact.no: "))
+
+        height = "";
+        while not(isinstance(height, float)):
+            try:
+                weight = float(input("Height, in meters: "));
+            except:
+                print("Please enter a valid NUMBER.");
+            height = float(input("Height, in meters: "));
+        
+        weight = "";
+        while not(isinstance(weight, float)):
+            try:
+                weight = float(input("Weight, in kilograms: "));
+            except:
+                print("Please enter a valid NUMBER.");
+            weight = float(input("Weight, in kilograms: "));
+        
+
+        f = open('coachee_profile.txt','a')     
+        f.write(f'lol || {name} | {age} | {contact_no} | {weight} | {height}')
+        f.close()
+        print("\n\nProcessing...")
+        time.sleep(2)
+
+        print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
+        
+        print("Redirecting back to Coachee Page...\n");
+        time.sleep(2);
+        coachee(username, password, id, status);
+
+    elif(opt == 'n'):
+        print("Okay. Redirecting to Coachee Page...");
+        time.sleep(2);
+        coachee(username, password, id, status);
+
+
+# COACHEE FUNCTIONS end
+
+
+# COACH FUNCTIONS start
+
+
+
+# COACH FUNCTIONS end
+
+
+
+
+# MAIN COACH AND COACHEE FUNCTIONS start 
 
 def coachee(username, password, id, status):
     clear();
@@ -163,7 +353,7 @@ def coachee(username, password, id, status):
         '1' : message,
     };
 
-    funcDict[option](username, id);
+    funcDict[option](username, password, id, status);
 
 def coach(username, password, id, status):
     clear();
@@ -219,66 +409,33 @@ def coach(username, password, id, status):
 
     funcDict[option](username, id);
 
-def getMsg(username, id):
-    file = open("messageLog.txt", 'r');
+# MAIN COACH AND COACHEE FUNCTIONS end 
 
-    allMsg = [];
-
-    for info in file:
-        recipient, sender, content = info.split(" | ");
-        recipient = recipient.strip();
-        sender = sender.strip();
-        content = content.strip();
-
-        if(recipient == username):
-            allMsg.append(info);
-
-    file.close();
-    return allMsg;
-
-def message(username, Uid):
-
-    receive = input("To who do you want to send a message to?\n( !Enter their UserID! )");
-
-    file = open("registry.txt", 'r');
-
-    for info in file:
-        a, b, id, status = info.split(" | ");
-        a = a.strip();
-        b = b.strip();
-        id = id.strip();
-        status = status.strip();
-
-        name = "";
-
-        if(receive == id):
-            name = a;
-            break;
-
-    file.close();
-    print(f"You are sending a message to: {name}");
-    content = input("Please Enter Your Message Below:\n");
-    
-    file = open("messageLog.txt", 'a');
-    
-    file.write(f"{name} | {username} | {content}\n");
-
-    file.close();
-
-def clearMsg(username):
-    file = open("messageLog.txt", "r");
-    lines = file.readlines();
-    file.close();
-
-    file = open("messageLog.txt", "w");
-    for line in lines:
-        info = line.split(" | ");
-        if(info[0] != username):
-            file.write(line);
-    file.close(); 
 
 #Function that runs first
-# MAIN FUNCTION START
+# MAIN FUNCTIONS START
+def loginSys():
+    clear();
+    print("_____________________________________________________________\n");
+    opt = "";
+    while(opt != '1' or opt != '2'):
+        opt = input("Would you like to login or register? \n\n[ 1 ] - Login.\n[ 2 ] - Register.\n\nEnter your Input: ");
+        if(opt == '1' or opt == '2'):
+            break;
+        else:
+            print("Please Enter a Valid Input. [ 1 / 2 ]\n");
+    
+    if(opt == '1'):
+        a, b, c, d = login();
+
+        if(d == "COACHEE"):
+            coachee(a,b,c,d);
+        elif(d == "COACH"):
+            coach(a,b,c,d);
+
+    elif(opt == '2'):
+        register();
+
 def main():
     clear();
     loginSys();
