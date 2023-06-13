@@ -202,7 +202,17 @@ def getMsg(username, id):
     return allMsg;
 
 def message(username, password, uid, ustatus):
-    receive = input("To who do you want to send a message to?\n( !Enter their UserID! )");
+    print("Displaying User List:\n");
+    file = open("registry.txt", 'r');
+
+    for lines in file:
+        info = lines.split(" | ");
+        if(info[3].strip() == "COACHEE" or info[3].strip() == "COACH"):
+            print(f"Username: {info[0]}  ||  UserID: {info[2]}  ||  Coach/Coachee: {info[3].strip()}");
+
+    file.close();
+    
+    receive = input("\n\nTo who do you want to send a message to?\n( !Enter their UserID! )");
 
     file = open("registry.txt", 'r');
 
@@ -220,7 +230,7 @@ def message(username, password, uid, ustatus):
             break;
 
     file.close();
-    print(f"You are sending a message to: {name}");
+    print(f"\nYou are sending a message to: {name}");
     content = input("Please Enter Your Message Below:\n");
     
     file = open("messageLog.txt", 'a');
@@ -654,6 +664,49 @@ def viewCoacheeDetails(username, password, id, status):
             time.sleep(2);
             coach(username, password, id, status);
 
+def coachComment(username, password, id, status):
+    file = open("coachComment.txt", 'r');
+
+    contents = file.read();
+
+    file.close();
+
+    print(f"The Current Universal Comment for Coachees is '{contents}'.");
+    
+    opt = "";
+    while(opt != 'y' or opt != 'n'):
+        opt = input("Do You Want to Edit It?\n[ (Y)es / (N)o ]\n").lower();
+        if(opt == 'y' or opt == 'n'):
+            break;
+        else:
+            print("Please Enter a Valid Input. [ Y / N ]\n");
+    
+    if(opt == 'y'):
+        comment = input("Enter your NEW desired Universal Comment for Coachees: ");
+    
+        with open("coachComment.txt", "w") as file:
+            pass;
+
+        file.close();
+
+        file = open("coachComment.txt", 'w');
+    
+        file.write(comment);
+
+        file.close();
+    
+        print(f"Universal Comment for Coachees has been Successfully Edited to: '{comment}'");
+        print("Coachees Will See the Comment When They Log-In.\n");
+        time.sleep(3);
+        print("Redirecting to Coach Interface...");
+        time.sleep(2);
+        coach(username, password, id, status);
+    
+    else:
+        print("Okay. Redirecting back to Coach Interface...");
+        time.sleep(2);
+        coach(username, password, id, status);
+
 # COACH FUNCTIONS end
 
 
@@ -670,6 +723,14 @@ def coachee(username, password, id, status):
 
     print("_________________________________________________________\n");
     allMsg = getMsg(username, id);
+    file = open("coachComment.txt", 'r');
+
+    contents = file.read();
+
+    file.close();
+
+    print(f"Universal Comment for Coachees: '{contents}'.");
+
     if len(allMsg) == 0:
         print(f"Dear {username}, you do not have any unread notifications.");
     else:
@@ -764,17 +825,18 @@ def coach(username, password, id, status):
         time.sleep(2);
 
     print(f"Dear Coachee, What Would you Like to Do?\n");
-    option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Ban a User.\n[ 3 ] - View Coachee Details.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
+    option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Ban a User.\n[ 3 ] - View Coachee Details.\n[ 4 ] - Edit Universal Comment for Coachees.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
 
-    while not(option.isdigit() and int(option) < 4 and int(option) >= 0):
+    while not(option.isdigit() and int(option) < 5 and int(option) >= 0):
         print("\nInvalid Input Detected.\n");
         print("Please Enter a Valid Prompt.\n\n");
-        option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Ban a User.\n[ 3 ] - View Coachee Details.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
+        option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Ban a User.\n[ 3 ] - View Coachee Details.\n\n[ 0 ] - Log Out.\n[ 4 ] - Edit Universal Comment for Coachees.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
 
     funcDict = {
         '1' : message,
         '2' : removeUser,
         '3' : viewCoacheeDetails,
+        '4' : coachComment,
         '0' : loginSys,
     };
 
