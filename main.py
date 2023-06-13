@@ -54,6 +54,15 @@ def register():
 
     print(f"Your Desired Username: {username}\n");
     password = input("Enter Your Desired Password: ");
+    pwCheck = input("Enter Your Password Again: ");
+
+    while(password != pwCheck):
+        print("Passwords Do Not Match. Please Try Again.");
+        password = input("Enter Your Desired Password: ");
+        pwCheck = input("Enter Your Password Again: ");
+    
+    print("Congratulations! Passwords Match.\nProceeding...");
+    time.sleep(2);
 
     idGen = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5));
 
@@ -87,6 +96,94 @@ def checkUsername(username):
 
     file.close();
     return False;
+
+def changeLoginCredentials(username, password, id, status):
+    clear();
+    opt = "";
+    while(opt != '1' or opt != '2' or opt != '3'):
+        opt = input("What Would You Like to Change? \n\n[ 1 ] - Username.\n[ 2 ] - Password.\n[ 3 ] - Cancel.\n\nEnter your Input: ");
+        if(opt == '1' or opt == '2' or opt == '3'):
+            break;
+        else:
+            print("Please Enter a Valid Input. [ 1 / 2 / 3 ]\n");
+
+    if(opt == '1'):
+        loginChangeUsername(username, password, id, status);
+    elif(opt == '2'):
+        loginChangePassword(username, password, id, status);
+    else:
+        print("Operation Cancelled. Redirecting back to User Interface...");
+        coachee(username, password, id, status);
+
+
+def loginChangeUsername(username, password, id, status):
+    clear();
+    print("What would you like to change your username to?\n");
+    print(f"Current Username: {username}");
+    newUsername = input("New Username: ");
+
+    while(checkUsername(newUsername)):
+        print("User With That Name Already Exists! Please Enter Another Name.\n");
+        newUsername = input("New Username: ");
+    print("Congratulations! Your Username is Unique. Proceeding...");
+    time.sleep(1);
+
+    file = open("registry.txt", "r");
+    lines = file.readlines();
+    file.close();
+
+    file = open("registry.txt", "w");
+    for line in lines:
+        info = line.split(" | ");
+        if info[0] == username:
+            info[0] = newUsername;
+            file.write(" | ".join(info));
+        else:
+            file.write(line);
+    file.close();
+    
+    print("Username change successful! Please login again.");
+    print("Redirecting to first screen...\n");
+    time.sleep(2)
+    loginSys();
+
+def loginChangePassword(username, password, id, status):
+    clear();
+    print("Request to change password...\n");
+    pw = input("Please enter your current password: ");
+    if(pw == password):
+        print(f"Username: {username}");
+        print(f"Current password: {password}\n\n");
+
+        newPassword = input("Enter Your Desired Password: ");
+        pwCheck = input("Enter Your Password Again: ");
+
+        while(newPassword != pwCheck):
+            print("Passwords Do Not Match. Please Try Again.");
+            newPassword = input("Enter Your Desired Password: ");
+            pwCheck = input("Enter Your Password Again: ");
+
+        print("\nCongratulations! Passwords Match.\n");
+        time.sleep(3);
+
+        file = open("registry.txt", "r");
+        lines = file.readlines();
+        file.close();
+
+        file = open("registry.txt", "w");
+        for line in lines:
+            info = line.split(" | ");
+            if info[0] == username:
+                info[1] = newPassword;
+                file.write(" | ".join(info));
+            else:
+                file.write(line);
+        file.close();
+
+        print("Password change successful! Please login again.\n");
+        print("Redirecting to Login Menu...\n");
+        time.sleep(3);
+        loginSys();
 
 def getMsg(username, id):
     file = open("messageLog.txt", 'r');
@@ -478,16 +575,17 @@ def coachee(username, password, id, status):
         time.sleep(2);
 
     print(f"Dear Coachee, What Would you Like to Do?\n");
-    option = input("Function Options\n[ 1 ] - Send a Message.[ 2 ] - Edit Profile Details.\nPlease Enter the Respective Function Number ONLY.\n\n");
+    option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Edit Profile Details.\n[ 3 ] - Edit Login Credentials.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
 
-    while not(option.isdigit() and int(option) < 3 and int(option) > 0):
+    while not(option.isdigit() and int(option) < 4 and int(option) > 0):
         print("\nInvalid Input Detected.\n");
         print("Please Enter a Valid Prompt.\n\n");
-        option = input("Function Options\n[ 1 ] - Send a Message.[ 2 ] - Edit Profile Details.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
+        option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Edit Profile Details.\n[ 3 ] - Edit Login Credentials.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
 
     funcDict = {
         '1' : message,
         '2' : coacheeProfileEdit,
+        '3' : changeLoginCredentials,
     };
 
     funcDict[option](username, password, id, status);
