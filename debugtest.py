@@ -1,3 +1,5 @@
+import re;
+
 def removeUser():
     print("\nInput '!' to return to previous interface.");
     user = input("Input the Username/UserID of the user you want to ban: ");
@@ -55,7 +57,7 @@ def removeUser():
                 info = line.split(" | ");
 
                 if info[0] == name:
-                    info[3] = "BANNED";
+                    info[3] = "BANNED\n";
                     info[2] = reason;
                     file.write(" | ".join(info));
                 else:

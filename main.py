@@ -31,8 +31,6 @@ def login():
         status = status.strip();
 
         if(username == a and password == b):
-            print(f"\nCongratulations! Login is Successful, welcome back {username}.");
-            time.sleep(2);
             return(username, password, id, status);
 
     print("\n\nIncorrect Username or Password.");
@@ -107,8 +105,7 @@ def getMsg(username, id):
     file.close();
     return allMsg;
 
-def message(username, uid):
-
+def message(username, password, uid, ustatus):
     receive = input("To who do you want to send a message to?\n( !Enter their UserID! )");
 
     file = open("registry.txt", 'r');
@@ -135,6 +132,16 @@ def message(username, uid):
     file.write(f"{name} | {username} | {content}\n");
 
     file.close();
+
+    if(ustatus == "COACH"):
+        print("Message Successfully Sent.\nRedirecting to Coach Interface...");
+        time.sleep(2);
+        coach(username, password, uid, ustatus);
+    
+    else:
+        print("Message Successfully Sent.\nRedirecting to Coachee Interface...");
+        time.sleep(2);
+        coachee(username, password, uid, ustatus);
 
 def clearMsg(username):
     file = open("messageLog.txt", "r");
@@ -182,7 +189,7 @@ def coacheeProfile(username, password, id, status):
     print("\n\n__________Profile__________")
     opt = "";
     while(opt != 'y' or opt != 'n'):
-        opt = input("Would you like to update your profile?\n[ (Y)es / (N)o ]\n").lower();
+        opt = input("Would you like to create a profile?\n[ (Y)es / (N)o ]\n").lower();
         if(opt == 'y' or opt == 'n'):
             break;
         else:
@@ -211,10 +218,10 @@ def coacheeProfile(username, password, id, status):
         height = "";
         while not(isinstance(height, float)):
             try:
-                weight = float(input("Height, in meters: "));
+                height = float(input("Height, in meters: "));
             except:
                 print("Please enter a valid NUMBER.");
-            height = float(input("Height, in meters: "));
+                height = float(input("Height, in meters: "));
         
         weight = "";
         while not(isinstance(weight, float)):
@@ -222,9 +229,9 @@ def coacheeProfile(username, password, id, status):
                 weight = float(input("Weight, in kilograms: "));
             except:
                 print("Please enter a valid NUMBER.");
-            weight = float(input("Weight, in kilograms: "));
+                weight = float(input("Weight, in kilograms: "));
 
-        f = open('coachee_profile.txt','a')     
+        f = open('coacheeProfile.txt','a')     
         f.write(f'{username} ; {id} || {name} | {age} | {contact_no} | {weight} | {height}')
         f.close()
         print("\n\nProcessing...")
@@ -240,6 +247,101 @@ def coacheeProfile(username, password, id, status):
         print("Okay. Redirecting to Coachee Page...");
         time.sleep(2);
         coachee(username, password, id, status);
+
+def coacheeProfileEdit(username, password, id, status):
+    
+    file = open("coacheeProfile.txt", 'r');
+
+    flag = False;
+
+    for info in file:
+        info.rstrip();
+
+        if re.search(r"\b{}\b".format(username), info):
+            flag = True;
+            break;
+    
+    file.close();
+
+    
+    if(flag):
+        print("You Already have an Existing Profile.\n");
+        opt = "";
+        
+        while(opt != 'y' or opt != 'n'):
+            opt = input("Would you like to update your profile?\n[ (Y)es / (N)o ]\n").lower();
+            if(opt == 'y' or opt == 'n'):
+                break;
+            else:
+                print("Please Enter a Valid Input. [ Y / N ]\n");
+
+        if(opt == 'y'):
+            print("\nTell us about yourself. \n\n")
+            name = input("Name: ")
+
+            age = "";
+            while not(isinstance(age, int)):
+                try:
+                    age = int(input("Age, in years: "));
+                except:
+                    print("Please enter a valid NUMBER.");
+                    age = int(input("Age, in years: "));
+            
+            contact_no = "";
+            while not(isinstance(contact_no, int)):
+                try:
+                    contact_no = int(input("Contact.no: "))
+                except:
+                    print("Please enter a valid NUMBER.");
+                    contact_no = int(input("Contact.no: "))
+
+            height = "";
+            while not(isinstance(height, float)):
+                try:
+                    height = float(input("Height, in meters: "));
+                except:
+                    print("Please enter a valid NUMBER.");
+                    height = float(input("Height, in meters: "));
+            
+            weight = "";
+            while not(isinstance(weight, float)):
+                try:
+                    weight = float(input("Weight, in kilograms: "));
+                except:
+                    print("Please enter a valid NUMBER.");
+                    weight = float(input("Weight, in kilograms: "));
+    
+        print("All Inputs Received.");
+        print("Editing Currently Existing Entry...\n");
+        time.sleep(2);
+
+        file = open("coacheeProfile.txt", "r");
+        lines = file.readlines();
+        file.close();
+
+        file = open("coacheeProfile.txt", "w");
+        for line in lines:
+            info = line.split(" | ");
+            if(info[0] != username):
+                file.write(line);
+        
+        file.write(f'{username} ; {id} || {name} | {age} | {contact_no} | {weight} | {height}');
+        file.close();
+        print("Profile Details Successfully Updated.\n\nReturning to User Interface...");
+        time.sleep(2);
+        coachee(username, password, id, status);
+    
+    else:
+        print("You Currently Do Not Have a Profile.");
+        print("Initializing Profile User Details Creation...");
+        time.sleep(2);
+        coacheeProfile(username, password, id, status);
+
+
+def coacheeAssignCoach(username, id):
+    clear();
+    print(f"Your Username: {username}\nYour UserID: {id}");
+    print("Coach Assignment Interface...\n");
 
 
 # COACHEE FUNCTIONS end
@@ -259,7 +361,7 @@ def removeUser(username, password, id, status):
         info.rstrip();
 
         if re.search(r"\b{}\b".format(user), info):
-            flag = 'y';
+            flag = True;
             break;
     
     file.close();
@@ -376,15 +478,16 @@ def coachee(username, password, id, status):
         time.sleep(2);
 
     print(f"Dear Coachee, What Would you Like to Do?\n");
-    option = input("Function Options\n[ 1 ] - Send a Message.\nPlease Enter the Respective Function Number ONLY.\n\n");
+    option = input("Function Options\n[ 1 ] - Send a Message.[ 2 ] - Edit Profile Details.\nPlease Enter the Respective Function Number ONLY.\n\n");
 
-    while not(option.isdigit() and int(option) < 2 and int(option) > 0):
+    while not(option.isdigit() and int(option) < 3 and int(option) > 0):
         print("\nInvalid Input Detected.\n");
         print("Please Enter a Valid Prompt.\n\n");
-        option = input("Function Options\n[ 1 ] - Send a Message.\nPlease Enter the Respective Function Number ONLY.\n\n");
+        option = input("Function Options\n[ 1 ] - Send a Message.[ 2 ] - Edit Profile Details.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
 
     funcDict = {
         '1' : message,
+        '2' : coacheeProfileEdit,
     };
 
     funcDict[option](username, password, id, status);
@@ -430,7 +533,7 @@ def coach(username, password, id, status):
         time.sleep(2);
 
     print(f"Dear Coachee, What Would you Like to Do?\n");
-    option = input("Function Options\n[ 1 ] - Send a Message.\nPlease Enter the Respective Function Number ONLY.\n\n");
+    option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Ban a User.\nPlease Enter the Respective Function Number ONLY.\n\n");
 
     while not(option.isdigit() and int(option) < 2 and int(option) > 0):
         print("\nInvalid Input Detected.\n");
@@ -439,9 +542,10 @@ def coach(username, password, id, status):
 
     funcDict = {
         '1' : message,
+        '2' : removeUser,
     };
 
-    funcDict[option](username, id);
+    funcDict[option](username, password, id, status);
 
 # MAIN COACH AND COACHEE FUNCTIONS end 
 
@@ -452,6 +556,7 @@ def loginSys():
     clear();
     print("_____________________________________________________________\n");
     opt = "";
+    a, b, c, d = "", "", "", "";
     while(opt != '1' or opt != '2'):
         opt = input("Would you like to login or register? \n\n[ 1 ] - Login.\n[ 2 ] - Register.\n\nEnter your Input: ");
         if(opt == '1' or opt == '2'):
@@ -463,9 +568,18 @@ def loginSys():
         a, b, c, d = login();
 
         if(d == "COACHEE"):
+            print(f"\nCongratulations! Login is Successful, welcome back {a}.");
+            time.sleep(1);
             coachee(a,b,c,d);
         elif(d == "COACH"):
+            print(f"\nCongratulations! Login is Successful, welcome back {a}.");
+            time.sleep(1);
             coach(a,b,c,d);
+        elif(d == "BANNED"):
+            print(f"\nThis Account has been Banned.\nReason for Ban: {c}\n");
+            print("Redirecting back to Login Screen...");
+            time.sleep(3);
+            loginSys();
 
     elif(opt == '2'):
         register();
