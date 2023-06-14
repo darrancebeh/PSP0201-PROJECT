@@ -8,13 +8,6 @@ import re;
 def clear():
     os.system('cls' if os.name =='nt' else 'clear');
 
-def logOrReg():
-    opt = input("Would you like to login or register? \n\n[ 1 ] - Login.\n[ 2 ] - Register.\n\nEnter your Input: ");
-    if(opt == '1'):
-        login();
-    elif(opt == '2'):
-        register();
-
 def login():
     clear();
     print("LOGIN INTERFACE\n\n");
@@ -84,6 +77,28 @@ def register():
     print(f"\n\nReturning to Login Screen...");
 
     time.sleep(2);
+    loginSys();
+
+def aboutUs():
+    clear();
+    time.sleep(1)
+    print(">>>>>>>>>>About Us<<<<<<<<<<")
+    time.sleep(2)
+    print("\nWelcome to FitTrackr. The only Health and Fitness Tracker You Need!\n")
+    time.sleep(2)
+    print("An app that stays with you and is made to assist you in achieving your wellness and health objectives.\n") 
+    time.sleep(2)
+    print("Our goals is to lead you to active lifestyles, make wise choices, and realise your full potential.\n")
+    time.sleep(2)
+    print("The original idea of our application is to allow users to track their daily health progress and to have an idea of their current state of health and fitness.\n\n")
+    time.sleep(2)
+    print("Our Founders:\n1. Darrance Beh Heng Shek\n2. Chan Hoi Siang\n3. Lai Chee Xiang\n4. Low Wan Jin\n")
+    time.sleep(2)
+    print("Thank You...\n")
+    time.sleep(3)
+    os.system ('read -p "Press ENTER to to return to Mainpage"')
+    print("Redirecting Back to Login Menu...")
+    time.sleep(3)
     loginSys();
 
 def checkUsername(username):
@@ -359,6 +374,7 @@ def coacheeProfile(username, password, id, status):
         time.sleep(2)
 
         print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
+        os.system ('read -p "Press ENTER to to return to Setting"')
         
         print("Redirecting back to Coachee Page...\n");
         time.sleep(2);
@@ -710,8 +726,6 @@ def coachComment(username, password, id, status):
 # COACH FUNCTIONS end
 
 
-
-
 # MAIN COACH AND COACHEE FUNCTIONS start 
 
 def coachee(username, password, id, status):
@@ -855,9 +869,9 @@ def loginSys():
     print("_____________________________________________________________\n");
     opt = "";
     a, b, c, d = "", "", "", "";
-    while(opt != '1' or opt != '2'):
-        opt = input("Would you like to login or register? \n\n[ 1 ] - Login.\n[ 2 ] - Register.\n\nEnter your Input: ");
-        if(opt == '1' or opt == '2'):
+    while(opt != '1' or opt != '2' or opt != 'a' or opt != 'A'):
+        opt = input("Would you like to login or register? \n\n[ 1 ] - Login.\n[ 2 ] - Register.\n[ A ] - About Us.\n\nEnter your Input: ");
+        if(opt != '1' or opt != '2' or opt != 'a' or opt != 'A'):
             break;
         else:
             print("Please Enter a Valid Input. [ 1 / 2 ]\n");
@@ -881,6 +895,9 @@ def loginSys():
 
     elif(opt == '2'):
         register();
+
+    elif(opt == 'a' or opt == 'A'):
+        aboutUs();
 
 def main():
     clear();
