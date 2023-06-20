@@ -96,7 +96,7 @@ def aboutUs():
     time.sleep(2)
     print("Thank You...\n")
     time.sleep(3)
-    os.system ('read -p "Press ENTER to to return to Mainpage"')
+    input("Press Any Key to return to Login Menu\n");
     print("Redirecting Back to Login Menu...")
     time.sleep(3)
     loginSys();
@@ -323,7 +323,7 @@ def bmiCalc(username, password, id, status):
         print(f"Your BMI is {bmi}");
         print ("You are Obese, You Should REALLY Start Working Out! \n\n")
 
-    os.system ('read -p "Press ENTER to return to User Menu.\n"');
+    input("Press Any Key to Return to User Menu\n");
     print("Redirecting to User Menu...");
     time.sleep(2);
     coachee(username, password, id, status);
@@ -406,7 +406,7 @@ def coacheeProfile(username, password, id, status):
         time.sleep(2)
 
         print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
-        os.system ('read -p "Press ENTER to to return to User Menu"')
+        input("Press Any Key to Return to User Menu.\n");
         print("Redirecting to User Menu...");
         time.sleep(2);
         
@@ -521,7 +521,7 @@ def coacheeProfileEdit(username, password, id, status):
         file.close();
 
         print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
-        os.system ('read -p "Press ENTER to to return to User Menu"');
+        input("Press Any Key to Return to User Menu.\n");
         print("Redirecting to User Menu...");
         time.sleep(2);
         coachee(username, password, id, status);
@@ -584,7 +584,7 @@ def caloriesCalc(username, password, id, status):
                 print("\nYou Have Not Initialized Your Profile.");
                 time.sleep(1);
                 print("Please Setup Your Profile so That More Information and Statistics can Be Viewed Based on Your Health.");
-                os.system ('read -p "Press ENTER to return to User Menu.\n"')
+                input("Press Any Key to Return to User Menu.\n");
 
                 print("Redirecting to User Menu...");
                 time.sleep(2);
@@ -618,7 +618,7 @@ def caloriesCalc(username, password, id, status):
                 file.close();
         break;
 
-    os.system ('read -p "Press ENTER to return to User Menu\n"')
+    input("Press Any Key to Return to User Menu.\n");
     print("Redirecting to User Menu...");
     coachee(username, password, id, status);
 
@@ -641,7 +641,7 @@ def coacheeViewCoach(username, password, id, status):
     file.close();
     print("All Coaches Displayed.\n");
 
-    os.system ('read -p "Press ENTER to return to User Menu.\n"');
+    input("Press Any Key to Return to User Menu.\n");
     print("Redirecting to User Menu...");
     time.sleep(2);
     coachee(username, password, id, status);
