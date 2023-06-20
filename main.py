@@ -651,7 +651,7 @@ def coacheeViewCoach(username, password, id, status):
 
 # COACH FUNCTIONS start
 
-def removeUser(username, password, id, status):
+def banUser(username, password, id, status):
     print("Listing all Coachee Usernames and UserIDs...\n");
     time.sleep(2);
 
@@ -723,7 +723,7 @@ def removeUser(username, password, id, status):
                 info = line.split(" | ");
 
                 if info[0] == name:
-                    info[3] = "BANNED";
+                    info[3] = "BANNED\n";
                     info[2] = reason;
                     file.write(" | ".join(info));
                 else:
@@ -875,7 +875,67 @@ def coachComment(username, password, id, status):
         coach(username, password, id, status);
 
 def coachViewCoachee(username, password, id, status):
-    pass;
+    print("View Coachee Interface\n\n");
+    print("Displaying All Registered Coachees...\n");
+
+    n = 1;
+    file = open("registry.txt", 'r');
+
+    for lines in file:
+        info = lines.split(" | ");
+        if(info[3] == "COACHEE"):
+            print(f"{n} | Username: {info[0]} | UserID: {info[2]}");
+            n += 1;
+            time.sleep(1);
+
+    file.close();
+
+def coachRegister(uUsername, pPassword, iId, sStatus):
+    clear();
+    print("COACH REGISTRATION INTERFACE\n\n");
+    username = input("Enter Your Desired Username: ");
+
+    while(checkUsername(username)):
+        print("Username already exists. Please try a new name.");
+        time.sleep(2);
+        username = input("Enter Your Desired Username: ");
+    
+    else:
+        print("Congratulations! Your desired username is unique.\n");
+
+    print(f"Your Desired Username: {username}\n");
+    password = input("Enter Your Desired Password: ");
+    pwCheck = input("Enter Your Password Again: ");
+
+    while(password != pwCheck):
+        print("Passwords Do Not Match. Please Try Again.");
+        password = input("Enter Your Desired Password: ");
+        pwCheck = input("Enter Your Password Again: ");
+    
+    print("Congratulations! Passwords Match.\nProceeding...");
+    time.sleep(2);
+
+    idGen = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5));
+
+    file = open("registry.txt", "r");
+
+    if(idGen in file):
+        while(idGen in file):
+            idGen = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5));
+
+    file.close();
+
+    file = open("registry.txt", "a");
+    file.write(f"{username} | {password} | {idGen} | COACH\n");
+    file.close();
+
+    clear();
+    print(f"User Successfully Created. Welcome COACH {username}.\n");
+    print(f"Your uniquely generated UserID is [ {idGen} ] ");
+    print(f"\n\nReturning to Login Screen...");
+
+    time.sleep(2);
+    loginSys();
 
 # COACH FUNCTIONS end
 
@@ -996,18 +1056,20 @@ def coach(username, password, id, status):
         time.sleep(2);
 
     print(f"Dear Coachee, What Would you Like to Do?\n");
-    option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Ban a User.\n[ 3 ] - View Coachee Details.\n[ 4 ] - Edit Universal Comment for Coachees.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
+    option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Ban a User.\n[ 3 ] - View Coachee Details.\n[ 4 ] - Edit Universal Comment for Coachees.\n[ 5 ] - View Coachee List.\n[ 6 ] - Create Another Coach Account.\n[ 7 ] - Edit Login Credentials.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
 
-    while not(option.isdigit() and int(option) < 5 and int(option) >= 0):
+    while not(option.isdigit() and int(option) < 8 and int(option) >= 0):
         print("\nInvalid Input Detected.\n");
         print("Please Enter a Valid Prompt.\n\n");
-        option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Ban a User.\n[ 3 ] - View Coachee Details.\n\n[ 0 ] - Log Out.\n[ 4 ] - Edit Universal Comment for Coachees.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
+        option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Ban a User.\n[ 3 ] - View Coachee Details.\n[ 4 ] - Edit Universal Comment for Coachees.\n[ 5 ] - View Coachee List.\n[ 6 ] - Create Another Coach Account.\n[ 7 ] - Edit Login Credentials.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
 
     funcDict = {
         '1' : message,
-        '2' : removeUser,
+        '2' : banUser,
         '3' : viewCoacheeDetails,
         '4' : coachComment,
+        '6' : coachRegister,
+        '7' : changeLoginCredentials,
         '0' : loginSys,
     };
 
