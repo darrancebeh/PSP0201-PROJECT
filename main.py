@@ -297,7 +297,6 @@ def clearMsg(username):
             file.write(line);
     file.close();
 
-
 # COACHEE FUNCTIONS start
 
 def bmiCalc(username, password, id, status):
@@ -482,10 +481,11 @@ def coacheeProfileEdit(username, password, id, status):
                     weight = float(input("Weight, in kilograms: "));
     
         print("All Inputs Received.");
-
+        time.sleep(2);
         bmi = round((weight / height**2),2)
         print(f"Based on the Height and Weight you Inputted,\nYour BMI is: {bmi}\n");
-        
+        time.sleep(2);
+
         if(bmi <= 18.5):
             print("You are Underweight, You Should Gain More Weight!\n\n")
         elif(18.5 < bmi < 25):
@@ -519,6 +519,7 @@ def coacheeProfileEdit(username, password, id, status):
         
         file.write(f'{username} ; {id} // {name} | {age} | {contact_no} | {height} | {weight} | {bmi} | {bmr}\n');
         file.close();
+
         print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
         os.system ('read -p "Press ENTER to to return to User Menu"');
         print("Redirecting to User Menu...");
@@ -595,10 +596,10 @@ def caloriesCalc(username, password, id, status):
                     split = lines.split(" // ");
                     info = split[1];
 
-                    uName, uId = split[0].split(" ; ");
+                    cred = split[0].split(" ; ");
                     bmr = split[1].split(" | ")[6].strip()
 
-                    if(uName == username or uId == id):
+                    if(cred[0] == username):
                         mBmr = float(bmr);
                         print(f"\nYour BMR, Basal Metabolic Rate is: {mBmr}kJ per Day.");
                         time.sleep(2);
@@ -609,9 +610,9 @@ def caloriesCalc(username, password, id, status):
                         print(f"\n...Which Approximately Means...");
                         time.sleep(2);
                         if(mBmr - total_calories > 0):
-                            print(f"\nYou Have Lost {round((mBmr-total_calories)*0.00013,2)} Kilograms of Weight Today.");
+                            print(f"\nYou Have Lost {round((mBmr-total_calories)*0.00013, 2)} Kilograms of Weight Today.");
                         elif(mBmr - total_calories < 0):
-                            print(f"\nYou Have Gained {round((mBmr - total_calories) * -1,2)} Kilograms of Weight Today.");
+                            print(f"\nYou Have Gained {round((mBmr-total_calories) * -1,2)} Kilograms of Weight Today.");
                         else:
                             print(f"\nWow! It is a Break Even! No Weight Gained or Lost Today.");
                 file.close();
@@ -651,16 +652,18 @@ def coacheeViewCoach(username, password, id, status):
 # COACH FUNCTIONS start
 
 def removeUser(username, password, id, status):
-    print("Listing all Coachee Usernames and UserIDs...");
+    print("Listing all Coachee Usernames and UserIDs...\n");
     time.sleep(2);
 
     file = open("registry.txt", 'r');
+    n = 1
 
     for lines in file:
         info = lines.split(" | ");
-        if(info[3] == "COACHEE"):
-            print(f"Username: {info[0]}");
-            print(f"UserID: {info[1]}")
+        if(info[3].strip() == "COACHEE"):
+            print(f"[{n}] | Username: {info[0]} | UserID: {info[1]}");
+            n += 1;
+            time.sleep(1);
 
     file.close();
 
@@ -683,7 +686,7 @@ def removeUser(username, password, id, status):
     if(user == '!'):
         print("Okay. Redirecting to Coach Interface...");
         time.sleep(2);
-        coachee(username, password, id, status);
+        coach(username, password, id, status);
 
     if(flag):
         file = open("registry.txt", 'r');
