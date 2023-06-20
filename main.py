@@ -217,34 +217,55 @@ def getMsg(username, id):
     return allMsg;
 
 def message(username, password, uid, ustatus):
-    print("Displaying User List:\n");
+    clear()
+    print("Message Interface\n\n");
+    time.sleep(1);
+    print("Displaying User List...\n");
     file = open("registry.txt", 'r');
 
     for lines in file:
         info = lines.split(" | ");
         if(info[3].strip() == "COACHEE" or info[3].strip() == "COACH"):
             print(f"Username: {info[0]}  ||  UserID: {info[2]}  ||  Coach/Coachee: {info[3].strip()}");
+            time.sleep(1);
 
     file.close();
     
-    receive = input("\n\nTo who do you want to send a message to?\n( !Enter their UserID! )");
+    receive = input("\n\nTo who do you want to send a message to?\n( !Enter their Username/UserID! )");
 
+    flag = False;
     file = open("registry.txt", 'r');
-
     for info in file:
-        a, b, id, status = info.split(" | ");
-        a = a.strip();
-        b = b.strip();
-        id = id.strip();
-        status = status.strip();
+        info.rstrip();
 
-        name = "";
-
-        if(receive == id):
-            name = a;
+        if re.search(r"\b{}\b".format(receive), info):
+            flag = True;
             break;
-
     file.close();
+
+
+    if(flag):
+        file = open("registry.txt", 'r');
+
+        for info in file:
+            a, b, id, status = info.split(" | ");
+            a = a.strip();
+            b = b.strip();
+            id = id.strip();
+            status = status.strip();
+
+            name = "";
+
+            if(receive == id or receive == a):
+                name = a;
+                break;
+        file.close();
+    else:
+        print("That Username/UserID Does not Exist in Our Database.");
+        print("Redirecting to Coachee Menu...");
+        time.sleep(3);
+        coachee(username, password, uid, ustatus);
+    
     print(f"\nYou are sending a message to: {name}");
     content = input("Please Enter Your Message Below:\n");
     
@@ -255,13 +276,13 @@ def message(username, password, uid, ustatus):
     file.close();
 
     if(ustatus == "COACH"):
-        print("Message Successfully Sent.\nRedirecting to Coach Interface...");
-        time.sleep(2);
+        print("\nMessage Successfully Sent.\nRedirecting to Coach Interface...");
+        time.sleep(4);
         coach(username, password, uid, ustatus);
     
     else:
-        print("Message Successfully Sent.\nRedirecting to Coachee Interface...");
-        time.sleep(2);
+        print("\nMessage Successfully Sent.\nRedirecting to Coachee Interface...");
+        time.sleep(4);
         coachee(username, password, uid, ustatus);
 
 def clearMsg(username):
@@ -279,7 +300,7 @@ def clearMsg(username):
 
 # COACHEE FUNCTIONS start
 
-def bmiCalc():
+def bmiCalc(username, password, id, status):
     print("\n\nBody Mass Index Calculator Interface\n\n")
     print("Calculate your BMI!\n")
     weight = float(input("Enter your weight, in kg: "))
@@ -301,7 +322,12 @@ def bmiCalc():
 
     else:
         print(f"Your BMI is {bmi}");
-        print ("You are obese, Get Workout Now! \n\n")
+        print ("You are Obese, You Should REALLY Start Working Out! \n\n")
+
+    os.system ('read -p "Press ENTER to return to User Menu.\n"');
+    print("Redirecting to User Menu...");
+    time.sleep(2);
+    coachee(username, password, id, status);
 
 def coacheeProfile(username, password, id, status):
     print("Coachee Profile Interface");
@@ -367,17 +393,24 @@ def coacheeProfile(username, password, id, status):
             
         time.sleep(4);
 
+        bmr = round((88.362 + (13.397 * weight) + (4.799 * (height*100)) - (5.677 * age)), 2)
+        print(f"Your BMR, Basal Metabolic Rate is {bmr}kJ per day.\n");
+        print(f"You Will Gain Weight if You Eat More Than {bmr}kJ Calories a Day.");
+        print(f"You Will Lose Weight if You Eat Less Than {bmr}kJ Calories a Day.");
+
+        time.sleep(4);
+
         f = open('coacheeProfile.txt','a')     
-        f.write(f'{username} ; {id} // {name} | {age} | {contact_no} | {height} | {weight} | {bmi}\n');
+        f.write(f'{username} ; {id} // {name} | {age} | {contact_no} | {height} | {weight} | {bmi} | {bmr}\n');
         f.close()
         print("\nProcessing...")
         time.sleep(2)
 
         print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
-        os.system ('read -p "Press ENTER to to return to Setting"')
-        
-        print("Redirecting back to Coachee Page...\n");
+        os.system ('read -p "Press ENTER to to return to User Menu"')
+        print("Redirecting to User Menu...");
         time.sleep(2);
+        
         coachee(username, password, id, status);
 
     elif(opt == 'n'):
@@ -464,7 +497,12 @@ def coacheeProfileEdit(username, password, id, status):
         else:
             print ("You are Obese, You Should Really Start Losing Some Weight. \n\n")
         
-        time.sleep(3);
+        bmr = round((88.362 + (13.397 * weight) + (4.799 * (height*100)) - (5.677 * age)), 2)
+        print(f"Your BMR, Basal Metabolic Rate is {bmr}kJ per day.\n");
+        print(f"You Will Gain Weight if You Eat More Than {bmr}kJ Calories a Day.");
+        print(f"You Will Lose Weight if You Eat Less Than {bmr}kJ Calories a Day.");
+        
+        time.sleep(4);
 
         print("\n\nEditing Currently Existing Entry...\n");
         time.sleep(2);
@@ -479,9 +517,11 @@ def coacheeProfileEdit(username, password, id, status):
             if(info[0] != username):
                 file.write(line);
         
-        file.write(f'{username} ; {id} // {name} | {age} | {contact_no} | {height} | {weight} | {bmi}\n');
+        file.write(f'{username} ; {id} // {name} | {age} | {contact_no} | {height} | {weight} | {bmi} | {bmr}\n');
         file.close();
-        print("Profile Details Successfully Updated.\n\nReturning to User Interface...");
+        print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
+        os.system ('read -p "Press ENTER to to return to User Menu"');
+        print("Redirecting to User Menu...");
         time.sleep(2);
         coachee(username, password, id, status);
     
@@ -491,11 +531,119 @@ def coacheeProfileEdit(username, password, id, status):
         time.sleep(2);
         coacheeProfile(username, password, id, status);
 
-def coacheeAssignCoach(username, id):
+def caloriesCalc(username, password, id, status):
     clear();
-    print(f"Your Username: {username}\nYour UserID: {id}");
-    print("Coach Assignment Interface...\n");
+    print("\nRecord Your Food and Calories Intake!");
+    total_calories = 0
+    food_list = []
+    flag = True;
+    
+    while flag:
+        food = input("\n\n\nWhat Did You Eat Today?\n: ")
+        food_calorie = float(input("\nHow many calories (kJ) does it contain?\n: "))
+        
+        food_list.append(food)
+        total_calories += food_calorie
+        
+        a = "";
+        while(a != '1' and a != '2'):
+            a = input("\nDo you want to add more? | [1] YES [2] NO\n: ")
+            if(a != '1' and a != '2'):
+                print("Please Enter a Valid Input! [ 1 / 2 ]");
 
+        if a == "1":
+            continue;
+        elif a == "2":
+            flag = False;
+            print("\n-----------------------------  -----------------------------------------")
+            print("| Recommended Daily Calorie Intake: 2,000 kJ [WOMEN]   2,500 kJ [MEN] |")
+            print("-----------------------------------------------------------------------\n")
+            print("Your Food Intake Today:", food_list)
+            print("\nYour Total Calories Intake:", round(total_calories,2),"kJ\n")
+            time.sleep(3);
+            print("\nEstimations State 1 kcal = 0.00013kg");
+            time.sleep(2);
+            print(f"\nYou Have Gained {round(total_calories * 0.00013,2)} Kilograms of Weight from Your Food Intake Today.");
+            time.sleep(2);
+
+            flag2 = False;
+
+            file = open("coacheeProfile.txt", 'r');
+
+            for info in file:
+                info.rstrip();
+
+                if re.search(r"\b{}\b".format(username), info):
+                    flag2 = True;
+                    break;
+            
+            file.close();
+
+            if(not flag2):
+                print("\nYou Have Not Initialized Your Profile.");
+                time.sleep(1);
+                print("Please Setup Your Profile so That More Information and Statistics can Be Viewed Based on Your Health.");
+                os.system ('read -p "Press ENTER to return to User Menu.\n"')
+
+                print("Redirecting to User Menu...");
+                time.sleep(2);
+                coachee(username, password, id, status);
+            else:
+                mBmr = 0.00;
+                file = open("coacheeProfile.txt", 'r');
+                for lines in file:
+                    split = lines.split(" // ");
+                    info = split[1];
+
+                    uName, uId = split[0].split(" ; ");
+                    bmr = split[1].split(" | ")[6].strip()
+
+                    if(uName == username or uId == id):
+                        mBmr = float(bmr);
+                        print(f"\nYour BMR, Basal Metabolic Rate is: {mBmr}kJ per Day.");
+                        time.sleep(2);
+                        print(f"\nBased on The Data You Entered, Your Calorie Intake is {total_calories}kJ for Today.");
+                        time.sleep(2);
+                        print(f"\nYour Net Calorie Output Today is: {mBmr - total_calories}kJ.");
+                        time.sleep(2);
+                        print(f"\n...Which Approximately Means...");
+                        time.sleep(2);
+                        if(mBmr - total_calories > 0):
+                            print(f"\nYou Have Lost {round((mBmr-total_calories)*0.00013,2)} Kilograms of Weight Today.");
+                        elif(mBmr - total_calories < 0):
+                            print(f"\nYou Have Gained {round((mBmr - total_calories) * -1,2)} Kilograms of Weight Today.");
+                        else:
+                            print(f"\nWow! It is a Break Even! No Weight Gained or Lost Today.");
+                file.close();
+        break;
+
+    os.system ('read -p "Press ENTER to return to User Menu\n"')
+    print("Redirecting to User Menu...");
+    coachee(username, password, id, status);
+
+def coacheeViewCoach(username, password, id, status):
+    clear();
+    print("Viewing Coach List Interface\n\n");
+
+    print("Displaying all Registered Coaches...\n");
+    n = 1;
+    time.sleep(3);
+
+    file = open("registry.txt", 'r');
+
+    for info in file:
+        name, b, uid, uStatus = info.split(" | ");
+        uStatus = uStatus.strip();
+        if(uStatus) == "COACH":
+            print(f"{n} | Username: {name} | UserID: {uid} | Status: {uStatus}");
+            time.sleep(1);
+    file.close();
+    print("All Coaches Displayed.\n");
+
+    os.system ('read -p "Press ENTER to return to User Menu.\n"');
+    print("Redirecting to User Menu...");
+    time.sleep(2);
+    coachee(username, password, id, status);
 
 # COACHEE FUNCTIONS end
 
@@ -723,6 +871,9 @@ def coachComment(username, password, id, status):
         time.sleep(2);
         coach(username, password, id, status);
 
+def coachViewCoachee(username, password, id, status):
+    pass;
+
 # COACH FUNCTIONS end
 
 
@@ -777,17 +928,20 @@ def coachee(username, password, id, status):
         time.sleep(2);
 
     print(f"Dear Coachee, What Would you Like to Do?\n");
-    option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Edit Profile Details.\n[ 3 ] - Edit Login Credentials.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
+    option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Edit Profile Details.\n[ 3 ] - Edit Login Credentials.\n[ 4 ] - Calculate Your BMI!\n[ 5 ] - Calculate Your Calories for Today!\n[ 6 ] - View Coach List.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
 
-    while not(option.isdigit() and int(option) < 4 and int(option) >= 0):
+    while not(option.isdigit() and int(option) < 7 and int(option) >= 0):
         print("\nInvalid Input Detected.\n");
         print("Please Enter a Valid Prompt.\n\n");
-        option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Edit Profile Details.\n[ 3 ] - Edit Login Credentials.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
+        option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Edit Profile Details.\n[ 3 ] - Edit Login Credentials.\n[ 4 ] - Calculate Your BMI!\n[ 5 ] - Calculate Your Calories for Today!\n[ 6 ] - View Coach List.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
 
     funcDict = {
         '1' : message,
         '2' : coacheeProfileEdit,
         '3' : changeLoginCredentials,
+        '4' : bmiCalc,
+        '5' : caloriesCalc,
+        '6' : coacheeViewCoach,
         '0' : loginSys,
     };
 
@@ -867,14 +1021,19 @@ def coach(username, password, id, status):
 def loginSys():
     clear();
     print("_____________________________________________________________\n");
+    print("                   Welcome to FitTrackr!                       ");
+    print("            The Only Fitness Tracker You Need.                 \n\n");
     opt = "";
     a, b, c, d = "", "", "", "";
     while(opt != '1' or opt != '2' or opt != 'a' or opt != 'A'):
-        opt = input("Would you like to login or register? \n\n[ 1 ] - Login.\n[ 2 ] - Register.\n[ A ] - About Us.\n\nEnter your Input: ");
-        if(opt != '1' or opt != '2' or opt != 'a' or opt != 'A'):
-            break;
+        opt = input("Would you like to login or register? \n\n[ 1 ] - Login.\n[ 2 ] - Register.\n[ A ] - About Us.\n\n[ X ] - Exit Program.\n\nEnter your Input: ");
+        if(opt != '1' and opt != '2' and opt != 'a' and opt != 'A' and opt != 'x' and opt != 'X'):
+            clear();
+            print("\n\nPlease Enter a Valid Input.\n[ 1 / 2 / A ]\n");
+            time.sleep(2);
+            clear();
         else:
-            print("Please Enter a Valid Input. [ 1 / 2 ]\n");
+            break;
     
     if(opt == '1'):
         a, b, c, d = login();
@@ -898,6 +1057,12 @@ def loginSys():
 
     elif(opt == 'a' or opt == 'A'):
         aboutUs();
+
+    elif(opt == 'x' or opt == 'X'):
+        clear();
+        print("Thank You For Using FitTrackr!");
+        print("We Look Forward to Welcoming You Back!");
+        time.sleep(3);
 
 def main():
     clear();
