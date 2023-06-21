@@ -96,7 +96,7 @@ def aboutUs():
     time.sleep(2)
     print("Thank You...\n")
     time.sleep(3)
-    input("Press Any Key to return to Login Menu\n");
+    input("Press ENTER to return to Login Menu\n");
     print("Redirecting Back to Login Menu...")
     time.sleep(3)
     loginSys();
@@ -217,7 +217,7 @@ def getMsg(username, id):
     return allMsg;
 
 def message(username, password, uid, ustatus):
-    clear()
+    clear();
     print("Message Interface\n\n");
     time.sleep(1);
     print("Displaying User List...\n");
@@ -300,7 +300,9 @@ def clearMsg(username):
 # COACHEE FUNCTIONS start
 
 def bmiCalc(username, password, id, status):
+    clear();
     print("\n\nBody Mass Index Calculator Interface\n\n")
+    time.sleep(2);
     print("Calculate your BMI!\n")
     weight = float(input("Enter your weight, in kg: "))
     height = float(input("Enter your height, in m: "))
@@ -323,13 +325,15 @@ def bmiCalc(username, password, id, status):
         print(f"Your BMI is {bmi}");
         print ("You are Obese, You Should REALLY Start Working Out! \n\n")
 
-    input("Press Any Key to Return to User Menu\n");
+    input("Press ENTER to Return to User Menu\n");
     print("Redirecting to User Menu...");
     time.sleep(2);
     coachee(username, password, id, status);
 
 def coacheeProfile(username, password, id, status):
-    print("Coachee Profile Interface");
+    clear();
+    print("Coachee Profile Interface\n\n");
+    time.sleep(2);
 
     print("\n\n__________Profile__________")
     opt = "";
@@ -406,7 +410,7 @@ def coacheeProfile(username, password, id, status):
         time.sleep(2)
 
         print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
-        input("Press Any Key to Return to User Menu.\n");
+        input("Press ENTER to Return to User Menu.\n");
         print("Redirecting to User Menu...");
         time.sleep(2);
         
@@ -521,7 +525,7 @@ def coacheeProfileEdit(username, password, id, status):
         file.close();
 
         print("\n*** Dear",name, ", your profile has been successfully updated. ***\n")
-        input("Press Any Key to Return to User Menu.\n");
+        input("Press ENTER to Return to User Menu.\n");
         print("Redirecting to User Menu...");
         time.sleep(2);
         coachee(username, password, id, status);
@@ -534,6 +538,8 @@ def coacheeProfileEdit(username, password, id, status):
 
 def caloriesCalc(username, password, id, status):
     clear();
+    print("Calories Recording and Tracking Interface\n\n");
+    time.sleep(1);
     print("\nRecord Your Food and Calories Intake!");
     total_calories = 0
     food_list = []
@@ -556,7 +562,7 @@ def caloriesCalc(username, password, id, status):
             continue;
         elif a == "2":
             flag = False;
-            print("\n-----------------------------  -----------------------------------------")
+            print("\n------------------------------------------------------------------------")
             print("| Recommended Daily Calorie Intake: 2,000 kJ [WOMEN]   2,500 kJ [MEN] |")
             print("-----------------------------------------------------------------------\n")
             print("Your Food Intake Today:", food_list)
@@ -584,7 +590,7 @@ def caloriesCalc(username, password, id, status):
                 print("\nYou Have Not Initialized Your Profile.");
                 time.sleep(1);
                 print("Please Setup Your Profile so That More Information and Statistics can Be Viewed Based on Your Health.");
-                input("Press Any Key to Return to User Menu.\n");
+                input("Press ENTER to Return to User Menu.\n");
 
                 print("Redirecting to User Menu...");
                 time.sleep(2);
@@ -618,7 +624,7 @@ def caloriesCalc(username, password, id, status):
                 file.close();
         break;
 
-    input("Press Any Key to Return to User Menu.\n");
+    input("Press ENTER to Return to User Menu.\n");
     print("Redirecting to User Menu...");
     coachee(username, password, id, status);
 
@@ -641,7 +647,7 @@ def coacheeViewCoach(username, password, id, status):
     file.close();
     print("All Coaches Displayed.\n");
 
-    input("Press Any Key to Return to User Menu.\n");
+    input("Press ENTER to Return to User Menu.\n");
     print("Redirecting to User Menu...");
     time.sleep(2);
     coachee(username, password, id, status);
@@ -652,6 +658,9 @@ def coacheeViewCoach(username, password, id, status):
 # COACH FUNCTIONS start
 
 def banUser(username, password, id, status):
+    clear();
+    print("User Banning Interface\n\n");
+    time.sleep(2);
     print("Listing all Coachee Usernames and UserIDs...\n");
     time.sleep(2);
 
@@ -700,11 +709,17 @@ def banUser(username, password, id, status):
         
         if(user == name or user == uid):
             print(f"\n\nThe Details of the User:- \nUsername: {name} | UserID: {uid} | STATUS: {d}");
-
-        file.close();
+            file.close();
+            if(d == "BANNED\n"):
+                print("User Has Already Been Banned.");
+                time.sleep(3);
+                print("Redirecting Back to Coach Interface...");
+                time.sleep(2);
+                coach(username, password, id, status);
     
         opt = "";
         while(opt != 'y' or opt != 'n'):
+            print("!! Banning is IRREVERSIBLE. The Banned User will be Unable to Appeal Or Get Unbanned Once Banned. !!");
             opt = input(("\n\nAre You Sure That You Want to Ban The User? [ Y \ N ]\n")).lower();
             if(opt == 'y' or opt == 'n'):
                 break;
@@ -767,6 +782,7 @@ def viewCoacheeDetails(username, password, id, status):
         print("No Coachees Registered.\n");
         print("Redirecting to User Menu...");
         time.sleep(3);
+        coach(username, password, id, status);
     else:
         user = input("\nInput the Username/UserID of the user you want to view details of: ");
 
@@ -808,12 +824,18 @@ def viewCoacheeDetails(username, password, id, status):
                         print("User Details:\n");
                         print(f"Username: {uName}, UserID: {uId}\n");
                         print(f"Full Name: {name}\nAge: {age}\nContact Number: {con}\nHeight, in Meters: {height}\nWeight, in Kilograms: {weight}\nBMI: {bmi}");
+                    time.sleep(3);
+
+                    input("Enter ENTER to Return to User Menu.");
+                    print("\n\nRedirecting to User Menu...");
+                    time.sleep(3);
+                    coach(username, password, id, status);
                 file.close();
             
             else:
                 file.close();
                 print("\nThe User has not Initialized their Profile Yet.");
-                opt = input("Input any Key to Continue.");
+                input("Press ENTER to Continue.");
                 print("Redirecting to Coach Interface...");
                 time.sleep(2);
                 coach(username, password, id, status);
@@ -839,6 +861,9 @@ def viewCoacheeDetails(username, password, id, status):
                 coach(username, password, id, status);
 
 def coachComment(username, password, id, status):
+    clear();
+    print("Univeral Comment for Coachees ( UCC ) Editing Interface\n\n");
+    time.sleep(2);
     file = open("coachComment.txt", 'r');
 
     contents = file.read();
@@ -882,22 +907,29 @@ def coachComment(username, password, id, status):
         coach(username, password, id, status);
 
 def coachViewCoachee(username, password, id, status):
+    clear();
     print("View Coachee Interface\n\n");
+    time.sleep(1);
     print("Displaying All Registered Coachees...\n");
 
-    n = 1;
+    n = 0;
     file = open("registry.txt", 'r');
 
     for lines in file:
         info = lines.split(" | ");
         if(info[3] == "COACHEE\n"):
-            print(f"{n} | Username: {info[0]} | UserID: {info[2]}");
             n += 1;
+            print(f"{n} | Username: {info[0]} | UserID: {info[2]}");
             time.sleep(1);
 
     file.close();
 
-    input("Enter ANY key to Return to User Menu.");
+    if(n == 0):
+        time.sleep(1);
+        print("\nThere Are No Registered Coachees.\n");
+        time.sleep(2);
+
+    input("Enter ENTER to Return to User Menu.");
     print("Redirecting to User Menu...");
     time.sleep(2);
 
