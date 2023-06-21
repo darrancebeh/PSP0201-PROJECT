@@ -860,7 +860,7 @@ def viewCoacheeDetails(username, password, id, status):
                         print(f"Full Name: {name}\nAge: {age}\nContact Number: {con}\nHeight, in Meters: {height}\nWeight, in Kilograms: {weight}\nBMI: {bmi}");
                     time.sleep(3);
 
-                    input("Enter ENTER to Return to User Menu.");
+                    input("Press ENTER to Return to User Menu.");
                     print("\n\nRedirecting to User Menu...");
                     time.sleep(3);
                     coach(username, password, id, status);
@@ -963,7 +963,7 @@ def coachViewCoachee(username, password, id, status):
         print("\nThere Are No Registered Coachees.\n");
         time.sleep(2);
 
-    input("Enter ENTER to Return to User Menu.");
+    input("Press ENTER to Return to User Menu.");
     print("Redirecting to User Menu...");
     time.sleep(2);
 
