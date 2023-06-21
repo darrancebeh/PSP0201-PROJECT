@@ -1068,6 +1068,7 @@ def coach(username, password, id, status):
         '2' : banUser,
         '3' : viewCoacheeDetails,
         '4' : coachComment,
+        '5' : coachViewCoachee,
         '6' : coachRegister,
         '7' : changeLoginCredentials,
         '0' : loginSys,
