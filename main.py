@@ -757,7 +757,7 @@ def banUser(username, password, id, status):
                     coach(username, password, id, status);
     
             opt = "";
-            while(opt != 'y' or opt != 'n'):
+            while(opt != 'y' and opt != 'n'):
                 print("!! Banning is IRREVERSIBLE. The Banned User will be Unable to Appeal Or Get Unbanned Once Banned. !!");
                 opt = input(("\n\nAre You Sure That You Want to Ban The User? [ Y \ N ]\n")).lower();
                 if(opt == 'y' or opt == 'n'):
@@ -789,11 +789,14 @@ def banUser(username, password, id, status):
                 print("Redirecting to Coach Interface...");
                 time.sleep(2);
                 coach(username, password, id, status);
+                break;
         
             else:
                 print("Okay. Returning to Coach Interface...");
                 time.sleep(2);
                 coach(username, password, id, status);
+                break;
+        file.close();
             
     else:
         print("Invalid Input Detected. Redirecting to Coach Interface...");
