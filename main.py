@@ -883,12 +883,18 @@ def coachViewCoachee(username, password, id, status):
 
     for lines in file:
         info = lines.split(" | ");
-        if(info[3] == "COACHEE"):
+        if(info[3] == "COACHEE\n"):
             print(f"{n} | Username: {info[0]} | UserID: {info[2]}");
             n += 1;
             time.sleep(1);
 
     file.close();
+
+    input("Enter ANY key to Return to User Menu.");
+    print("Redirecting to User Menu...");
+    time.sleep(2);
+
+    coach(username, password, id, status);
 
 def coachRegister(uUsername, pPassword, iId, sStatus):
     clear();
