@@ -776,7 +776,7 @@ def banUser(username, password, id, status):
                 for line in lines:
                     info = line.split(" | ");
 
-                    if(info[0] == user):
+                    if(info[0] == user or info[2] == user):
                         info[3] = "BANNED\n";
                         info[2] = reason;
                         file.write(" | ".join(info));
