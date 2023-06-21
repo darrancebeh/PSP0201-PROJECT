@@ -137,6 +137,8 @@ def changeLoginCredentials(username, password, id, status):
 
 def loginChangeUsername(username, password, id, status):
     clear();
+    print("IMPORTANT: Changing Your Username will Reset Your Profile. You Will Need to Reinitialize Your Profile After Changing Your Username.\n");
+    time.sleep(1);
     print("What would you like to change your username to?\n");
     print(f"Current Username: {username}");
     newUsername = input("New Username: ");
@@ -704,7 +706,7 @@ def banUser(username, password, id, status):
     for lines in file:
         info = lines.split(" | ");
         if(info[3].strip() == "COACHEE"):
-            print(f"[{n}] | Username: {info[0]} | UserID: {info[1]}");
+            print(f"[{n}] | Username: {info[0]} | UserID: {info[2]}");
             n += 1;
             time.sleep(1);
 
@@ -731,6 +733,7 @@ def banUser(username, password, id, status):
         time.sleep(2);
         coach(username, password, id, status);
 
+    n = 0;
     if(flag):
         file = open("registry.txt", 'r');
     
@@ -740,60 +743,62 @@ def banUser(username, password, id, status):
             b = b.strip();
             uid = uid.strip();
             d = d.strip();
+            
         
-        if(user == name or user == uid):
-            print(f"\n\nThe Details of the User:- \nUsername: {name} | UserID: {uid} | STATUS: {d}");
-            file.close();
-            if(d == "BANNED\n"):
-                print("User Has Already Been Banned.");
-                time.sleep(3);
-                print("Redirecting Back to Coach Interface...");
+            if(user == name or user == uid):
+                n = 1;
+                print(f"\n\nThe Details of the User:- \nUsername: {name} | UserID: {uid} | STATUS: {d}");
+                file.close();
+                if(d == "BANNED\n"):
+                    print("User Has Already Been Banned.");
+                    time.sleep(3);
+                    print("Redirecting Back to Coach Interface...");
+                    time.sleep(2);
+                    coach(username, password, id, status);
+    
+            opt = "";
+            while(opt != 'y' or opt != 'n'):
+                print("!! Banning is IRREVERSIBLE. The Banned User will be Unable to Appeal Or Get Unbanned Once Banned. !!");
+                opt = input(("\n\nAre You Sure That You Want to Ban The User? [ Y \ N ]\n")).lower();
+                if(opt == 'y' or opt == 'n'):
+                    break;
+                else:
+                    print("Please Enter a Valid Input. [ Y / N ]\n");
+        
+            if(opt == 'y'):
+                reason = input("\nPlease Provide a Reason to The Ban: ");
+            
+                file = open("registry.txt", "r");
+                lines = file.readlines();
+                file.close();
+
+                file = open("registry.txt", "w");
+                for line in lines:
+                    info = line.split(" | ");
+
+                    if(info[0] == user):
+                        info[3] = "BANNED\n";
+                        info[2] = reason;
+                        file.write(" | ".join(info));
+                    else:
+                        file.write(line);
+
+                file.close();
+                print("User Successfully Banned.");
+
+                print("Redirecting to Coach Interface...");
                 time.sleep(2);
                 coach(username, password, id, status);
-    
-        opt = "";
-        while(opt != 'y' or opt != 'n'):
-            print("!! Banning is IRREVERSIBLE. The Banned User will be Unable to Appeal Or Get Unbanned Once Banned. !!");
-            opt = input(("\n\nAre You Sure That You Want to Ban The User? [ Y \ N ]\n")).lower();
-            if(opt == 'y' or opt == 'n'):
-                break;
+        
             else:
-                print("Please Enter a Valid Input. [ Y / N ]\n");
-    
-        if(opt == 'y'):
-            reason = input("\nPlease Provide a Reason to The Ban: ");
-        
-            file = open("registry.txt", "r");
-            lines = file.readlines();
-            file.close();
-
-            file = open("registry.txt", "w");
-            for line in lines:
-                info = line.split(" | ");
-
-                if info[0] == name:
-                    info[3] = "BANNED\n";
-                    info[2] = reason;
-                    file.write(" | ".join(info));
-                else:
-                    file.write(line);
-
-            file.close();
-            print("User Successfully Banned.");
-
-            print("Redirecting to Coach Interface...");
-            time.sleep(2);
-            coach(username, password, id, status);
-        
-        else:
-            print("Okay. Returning to Coach Interface...");
-            time.sleep(2);
-            coach(username, password, id, status);
+                print("Okay. Returning to Coach Interface...");
+                time.sleep(2);
+                coach(username, password, id, status);
             
     else:
         print("Invalid Input Detected. Redirecting to Coach Interface...");
         time.sleep(2);
-        coachee(username, password, id, status);
+        coach(username, password, id, status);
 
 def viewCoacheeDetails(username, password, id, status):
     clear();
