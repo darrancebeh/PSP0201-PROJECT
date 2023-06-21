@@ -81,7 +81,7 @@ def register():
 
 def aboutUs():
     clear();
-    time.sleep(1)
+    time.sleep(2)
     print(">>>>>>>>>>About Us<<<<<<<<<<")
     time.sleep(2)
     print("\nWelcome to FitTrackr. The only Health and Fitness Tracker You Need!\n")
@@ -140,7 +140,7 @@ def loginChangeUsername(username, password, id, status):
         print("User With That Name Already Exists! Please Enter Another Name.\n");
         newUsername = input("New Username: ");
     print("Congratulations! Your Username is Unique. Proceeding...");
-    time.sleep(1);
+    time.sleep(2);
 
     file = open("registry.txt", "r");
     lines = file.readlines();
@@ -219,17 +219,34 @@ def getMsg(username, id):
 def message(username, password, uid, ustatus):
     clear();
     print("Message Interface\n\n");
-    time.sleep(1);
+    time.sleep(2);
     print("Displaying User List...\n");
+    n = 0;
     file = open("registry.txt", 'r');
 
     for lines in file:
         info = lines.split(" | ");
-        if(info[3].strip() == "COACHEE" or info[3].strip() == "COACH"):
-            print(f"Username: {info[0]}  ||  UserID: {info[2]}  ||  Coach/Coachee: {info[3].strip()}");
-            time.sleep(1);
+        if(info[0].strip() != username):
+            if(info[3].strip() == "COACHEE" or info[3].strip() == "COACH"):
+                n += 1;
+                print(f"Username: {info[0]}  ||  UserID: {info[2]}  ||  Coach/Coachee: {info[3].strip()}");
+                time.sleep(1);
 
     file.close();
+    
+    if(n == 0):
+        if(ustatus == "COACH\n"):
+            print("\nThere Are No Registered Users Other Than You.\nSending a Message is Not Possible.\n");
+            input("Press ENTER to Return to Coach Interface.");
+            print("Redirecting Back to Coach Interface...");
+            time.sleep(3);
+            coach(username, password, uid, ustatus);
+        else:
+            print("There Are No Registered Users Other Than You.\nSending a Message is Not Possible.\n");
+            input("Press ENTER to Return to Coach Interface.");
+            print("Redirecting Back to Coachee Interface...");
+            time.sleep(3);
+            coachee(username, password, uid, ustatus);
     
     receive = input("\n\nTo who do you want to send a message to?\n( !Enter their Username/UserID! )");
 
@@ -539,7 +556,7 @@ def coacheeProfileEdit(username, password, id, status):
 def caloriesCalc(username, password, id, status):
     clear();
     print("Calories Recording and Tracking Interface\n\n");
-    time.sleep(1);
+    time.sleep(2);
     print("\nRecord Your Food and Calories Intake!");
     total_calories = 0
     food_list = []
@@ -588,7 +605,7 @@ def caloriesCalc(username, password, id, status):
 
             if(not flag2):
                 print("\nYou Have Not Initialized Your Profile.");
-                time.sleep(1);
+                time.sleep(2);
                 print("Please Setup Your Profile so That More Information and Statistics can Be Viewed Based on Your Health.");
                 input("Press ENTER to Return to User Menu.\n");
 
@@ -909,7 +926,7 @@ def coachComment(username, password, id, status):
 def coachViewCoachee(username, password, id, status):
     clear();
     print("View Coachee Interface\n\n");
-    time.sleep(1);
+    time.sleep(2);
     print("Displaying All Registered Coachees...\n");
 
     n = 0;
@@ -925,7 +942,7 @@ def coachViewCoachee(username, password, id, status):
     file.close();
 
     if(n == 0):
-        time.sleep(1);
+        time.sleep(2);
         print("\nThere Are No Registered Coachees.\n");
         time.sleep(2);
 
@@ -1151,14 +1168,15 @@ def loginSys():
 
         if(d == "COACHEE"):
             print(f"\nCongratulations! Login is Successful, welcome back {a}.");
-            time.sleep(2);
+            time.sleep(3);
             coachee(a,b,c,d);
         elif(d == "COACH"):
             print(f"\nCongratulations! Login is Successful, welcome back {a}.");
-            time.sleep(2);
+            time.sleep(3);
             coach(a,b,c,d);
         elif(d == "BANNED"):
-            print(f"\nThis Account has been Banned.\nReason for Ban: {c}\n");
+            print(f"\nSorry. This Account has been Banned.\nReason for Ban: {c}\n");
+            input("Press ENTER to Return to Login Main Menu.\n");
             print("Redirecting back to Login Screen...");
             time.sleep(4);
             loginSys();
