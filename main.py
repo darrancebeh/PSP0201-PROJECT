@@ -74,6 +74,7 @@ def register():
     clear();
     print(f"User Successfully Created. Welcome COACHEE {username}.\n");
     print(f"Your uniquely generated UserID is [ {idGen} ] ");
+    time.sleep(3);
     print(f"\n\nReturning to Login Screen...");
 
     time.sleep(2);
@@ -235,7 +236,7 @@ def message(username, password, uid, ustatus):
     file.close();
     
     if(n == 0):
-        if(ustatus == "COACH\n"):
+        if(ustatus == "COACH"):
             print("\nThere Are No Registered Users Other Than You.\nSending a Message is Not Possible.\n");
             input("Press ENTER to Return to Coach Interface.");
             print("Redirecting Back to Coach Interface...");
@@ -243,7 +244,7 @@ def message(username, password, uid, ustatus):
             coach(username, password, uid, ustatus);
         else:
             print("There Are No Registered Users Other Than You.\nSending a Message is Not Possible.\n");
-            input("Press ENTER to Return to Coach Interface.");
+            input("Press ENTER to Return to Coachee Interface.");
             print("Redirecting Back to Coachee Interface...");
             time.sleep(3);
             coachee(username, password, uid, ustatus);
@@ -352,7 +353,7 @@ def coacheeProfile(username, password, id, status):
     print("Coachee Profile Interface\n\n");
     time.sleep(2);
 
-    print("\n\n__________Profile__________")
+    print(f"Coachee {username}'s Profile Creation Interface\n\n");
     opt = "";
     while(opt != 'y' or opt != 'n'):
         opt = input("Would you like to create a profile?\n[ (Y)es / (N)o ]\n").lower();
@@ -363,8 +364,11 @@ def coacheeProfile(username, password, id, status):
     
     if(opt == 'y'):
         print("\nTell us about yourself. \n\n")
-        name = input("Full Name: ")
-
+        name = input("Full Name: ");
+        while not(name.isalpha()):
+            print("Please Enter Your Real Name. No Numbers Please!\n");
+            name = input("Full Name: ");
+        
         age = "";
         while not(isinstance(age, int)):
             try:
@@ -441,6 +445,8 @@ def coacheeProfile(username, password, id, status):
 def coacheeProfileEdit(username, password, id, status):
     clear();
     
+    print(f"Coachee {username}'s Profile Creation Interface\n\n");
+
     file = open("coacheeProfile.txt", 'r');
 
     flag = False;
@@ -550,7 +556,7 @@ def coacheeProfileEdit(username, password, id, status):
     else:
         print("You Currently Do Not Have a Profile.");
         print("Initializing Profile User Details Creation...");
-        time.sleep(2);
+        time.sleep(5);
         coacheeProfile(username, password, id, status);
 
 def caloriesCalc(username, password, id, status):
