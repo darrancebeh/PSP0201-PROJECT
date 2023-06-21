@@ -754,82 +754,89 @@ def viewCoacheeDetails(username, password, id, status):
 
     file = open("registry.txt", 'r');
 
+    n = 0;
+
     for lines in file:
         info = lines.split(" | ");
         if(info[3] == "COACHEE\n"):
             print(f"Username: {info[0]}  ||  UserID: {info[2]}");
+            n += 1;
 
     file.close();
+    if(n == 0):
+        print("No Coachees Registered.\n");
+        print("Redirecting to User Menu...");
+        time.sleep(3);
+    else:
+        user = input("\nInput the Username/UserID of the user you want to view details of: ");
 
-    user = input("\nInput the Username/UserID of the user you want to view details of: ");
+        file = open("registry.txt", 'r');
 
-    file = open("registry.txt", 'r');
-
-    flag = False;
-
-    for info in file:
-        info.rstrip();
-
-        if re.search(r"\b{}\b".format(user), info):
-            flag = True;
-            break;
-    
-    file.close();
-
-    if(flag):
-        flag2 = False
-        file = open("coacheeProfile.txt", 'r');
+        flag = False;
 
         for info in file:
             info.rstrip();
 
             if re.search(r"\b{}\b".format(user), info):
-                flag2 = True;
+                flag = True;
                 break;
-        file.close();
         
-        if(flag2):
+        file.close();
+
+        if(flag):
+            flag2 = False
             file = open("coacheeProfile.txt", 'r');
-            for lines in file:
-                split = lines.split(" // ");
-                info = split[1];
 
-                uName, uId = split[0].split(" ; ");
-                name, age, con, height, weight, bmi = split[1].split(" | ")
+            for info in file:
+                info.rstrip();
 
-                if(uName == user or uId == user):
-                    print("User Details:\n");
-                    print(f"Username: {uName}, UserID: {uId}\n");
-                    print(f"Full Name: {name}\nAge: {age}\nContact Number: {con}\nHeight, in Meters: {height}\nWeight, in Kilograms: {weight}\nBMI: {bmi}");
+                if re.search(r"\b{}\b".format(user), info):
+                    flag2 = True;
+                    break;
             file.close();
-        
-        else:
-            file.close();
-            print("\nThe User has not Initialized their Profile Yet.");
-            opt = input("Input any Key to Continue.");
-            print("Redirecting to Coach Interface...");
-            time.sleep(2);
-            coach(username, password, id, status);
+            
+            if(flag2):
+                file = open("coacheeProfile.txt", 'r');
+                for lines in file:
+                    split = lines.split(" // ");
+                    info = split[1];
 
-        file.close();
-    else:
-        print("Invalid Input Detected. Please Enter a Valid Username/UserID.\n")
-        opt = "";
-        while(opt != 'y' or opt != 'n'):
-            opt = input("Would you like to Try Again?\n[ (Y)es / (N)o ]\n").lower();
-            if(opt == 'y' or opt == 'n'):
-                break;
+                    uName, uId = split[0].split(" ; ");
+                    name, age, con, height, weight, bmi, bmr = split[1].split(" | ")
+
+                    if(uName == user or uId == user):
+                        print("User Details:\n");
+                        print(f"Username: {uName}, UserID: {uId}\n");
+                        print(f"Full Name: {name}\nAge: {age}\nContact Number: {con}\nHeight, in Meters: {height}\nWeight, in Kilograms: {weight}\nBMI: {bmi}");
+                file.close();
+            
             else:
-                print("Please Enter a Valid Input. [ Y / N ]\n");
+                file.close();
+                print("\nThe User has not Initialized their Profile Yet.");
+                opt = input("Input any Key to Continue.");
+                print("Redirecting to Coach Interface...");
+                time.sleep(2);
+                coach(username, password, id, status);
 
-        if(opt == 'y'):
-            print("Retrying...\n");
-            time.sleep(2);
-            viewCoacheeDetails(username, password, id, status);
+            file.close();
         else:
-            print("Redirecting back to Coach Interface...\n");
-            time.sleep(2);
-            coach(username, password, id, status);
+            print("Invalid Input Detected. Please Enter a Valid Username/UserID.\n")
+            opt = "";
+            while(opt != 'y' or opt != 'n'):
+                opt = input("Would you like to Try Again?\n[ (Y)es / (N)o ]\n").lower();
+                if(opt == 'y' or opt == 'n'):
+                    break;
+                else:
+                    print("Please Enter a Valid Input. [ Y / N ]\n");
+
+            if(opt == 'y'):
+                print("Retrying...\n");
+                time.sleep(2);
+                viewCoacheeDetails(username, password, id, status);
+            else:
+                print("Redirecting back to Coach Interface...\n");
+                time.sleep(2);
+                coach(username, password, id, status);
 
 def coachComment(username, password, id, status):
     file = open("coachComment.txt", 'r');
