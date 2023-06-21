@@ -129,7 +129,11 @@ def changeLoginCredentials(username, password, id, status):
         loginChangePassword(username, password, id, status);
     else:
         print("Operation Cancelled. Redirecting back to User Interface...");
-        coachee(username, password, id, status);
+        time.sleep(3);
+        if(status == "COACH"):
+            coach(username, password, id, status);
+        else:
+            coachee(username, password, id, status);
 
 def loginChangeUsername(username, password, id, status):
     clear();
@@ -199,6 +203,13 @@ def loginChangePassword(username, password, id, status):
         print("Redirecting to Login Menu...\n");
         time.sleep(3);
         loginSys();
+    else:
+        print("Wrong Password Detected.\nRedirecting Back to User Menu...");
+        time.sleep(3);
+    if(status == "COACHEE"):
+        coachee(username, password, id, status);
+    else:
+        coach(username, password, id, status);
 
 def getMsg(username, id):
     file = open("messageLog.txt", 'r');
@@ -772,12 +783,12 @@ def banUser(username, password, id, status):
 
             print("Redirecting to Coach Interface...");
             time.sleep(2);
-            coachee(username, password, id, status);
+            coach(username, password, id, status);
         
         else:
             print("Okay. Returning to Coach Interface...");
             time.sleep(2);
-            coachee(username, password, id, status);
+            coach(username, password, id, status);
             
     else:
         print("Invalid Input Detected. Redirecting to Coach Interface...");
@@ -1123,7 +1134,7 @@ def coach(username, password, id, status):
 
         time.sleep(2);
 
-    print(f"Dear Coachee, What Would you Like to Do?\n");
+    print(f"Dear Coach, What Would you Like to Do?\n");
     option = input("Function Options\n[ 1 ] - Send a Message.\n[ 2 ] - Ban a User.\n[ 3 ] - View Coachee Details.\n[ 4 ] - Edit Universal Comment for Coachees.\n[ 5 ] - View Coachee List.\n[ 6 ] - Create Another Coach Account.\n[ 7 ] - Edit Login Credentials.\n\n[ 0 ] - Log Out.\n\nPlease Enter the Respective Function Number ONLY.\n\n");
 
     while not(option.isdigit() and int(option) < 8 and int(option) >= 0):
