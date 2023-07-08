@@ -262,7 +262,16 @@ def message(username, password, uid, ustatus):
             time.sleep(3);
             coachee(username, password, uid, ustatus);
     
-    receive = input("\n\nTo who do you want to send a message to?\n( !Enter their Username/UserID! )");
+    receive = input("\n\nTo who do you want to send a message to? [ Input '!' To Cancel ]\n( !Enter their Username/UserID! )");
+
+    if(receive == '!'):
+        print("Okay. Redirecting to User Interface...");
+        time.sleep(3);
+        if(ustatus == "COACH"):
+            coach(username, password, uid, ustatus);
+
+        else:
+            coachee(username, password, uid, ustatus);
 
     flag = False;
     file = open("registry.txt", 'r');
@@ -519,7 +528,11 @@ def coacheeProfileEdit(username, password, id, status):
                 except:
                     print("Please enter a valid NUMBER.");
                     weight = float(input("Weight, in kilograms: "));
-    
+        elif(opt == 'n'):
+            print("Okay. Redirecting to User Inteface...");
+            time.sleep(3);
+            coachee(username, password, id, status);
+
         print("All Inputs Received.");
         time.sleep(2);
         bmi = round((weight / height**2),2)
@@ -600,7 +613,7 @@ def caloriesCalc(username, password, id, status):
             flag = False;
             print("\n------------------------------------------------------------------------")
             print("| Recommended Daily Calorie Intake: 2,000 kJ [WOMEN]   2,500 kJ [MEN] |")
-            print("-----------------------------------------------------------------------\n")
+            print("---------f--------------------------------------------------------------\n")
             print("Your Food Intake Today:", food_list)
             print("\nYour Total Calories Intake:", round(total_calories,2),"kJ\n")
             time.sleep(3);
@@ -1074,6 +1087,10 @@ def coachee(username, password, id, status):
             print("Your Messages have Been Successfully Cleared!\n\n");
         else:
             print("Messages Not Cleared.\n\n")
+            time.sleep(1);
+            print("Redirecting to User Interface...");
+            time.sleep(2);
+            coachee(username, password, id, status);
 
         time.sleep(2);
 
@@ -1139,6 +1156,9 @@ def coach(username, password, id, status):
             print("Your Messages have Been Successfully Cleared!\n\n");
         else:
             print("Messages Not Cleared.\n\n")
+            time.sleep(1);
+            print("Redirecting to User Inteface...");
+            coach(username, password, id, status);
 
         time.sleep(2);
 
