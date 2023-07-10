@@ -529,7 +529,7 @@ def coacheeProfileEdit(username, password, id, status):
                     print("Please enter a valid NUMBER.");
                     weight = float(input("Weight, in kilograms: "));
         elif(opt == 'n'):
-            print("Okay. Redirecting to User Inteface...");
+            print("Okay. Redirecting to User Interface...");
             time.sleep(3);
             coachee(username, password, id, status);
 
